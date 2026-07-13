@@ -193,7 +193,7 @@ body {
     z-index: 1;
     opacity: 0.08; /* Transparente y balanceado */
     pointer-events: none;
-    background-image: url('logo.png');
+    background-image: url('https://github.com/aromq90-max/PorteroSeguro/blob/main/Logo.png?raw=true');
     background-repeat: no-repeat;
     background-position: bottom center;
     background-size: contain;
