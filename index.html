@@ -3,67 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portero Seguro — Consola de Control Ultra</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Portero Seguro — SOC Control Panel</title>
+    <link class="styles" rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- PANTALLA DE INGRESO (LOGIN) -->
-    <div id="login-overlay" class="login-overlay">
-        <div class="login-card">
-            <div class="login-logo-container">
-                <img src="2024 LOGO RGB_04.png" alt="Portero Seguro" class="login-logo">
-            </div>
-
-            <div id="login-role-selector" class="login-role-selector">
-                <h2>Control de Estaciones</h2>
-                <p>Selecciona un rol para ingresar al sistema de monitoreo</p>
-                <div class="role-buttons">
-                    <button id="btn-login-viewer" class="btn btn-viewer">👁️ Modo Visualizador</button>
-                    <button id="btn-select-admin" class="btn btn-admin-select">🔒 Acceso Administrador</button>
-                </div>
-            </div>
-
-            <form id="login-admin-form" class="login-admin-form hidden">
-                <h2>Acceso Administrador</h2>
-                <p>Ingresa las credenciales de encriptación</p>
-                <div class="input-group">
-                    <label for="login-user">Usuario de Seguridad</label>
-                    <input type="text" id="login-user" placeholder="Ej. admin" required autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" placeholder="••••••••" required>
-                </div>
-                <p id="login-error-msg" class="error-msg hidden">⚠️ Credenciales incorrectas</p>
-                <div class="form-actions">
-                    <button type="button" id="btn-back-to-roles" class="btn btn-secondary">Atrás</button>
-                    <button type="submit" class="btn btn-primary">Verificar</button>
-                </div>
-            </form>
+  <!-- PANTALLA DE LOGEO -->
+<div id="login-overlay" class="login-overlay">
+    <div class="login-card">
+        <div class="login-logo-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <!-- Se eliminó el texto HTML redundante y se agrandó el logo que ya incluye el nombre -->
+            <img src="logo.png" alt="Portero Seguro" class="login-logo-img" style="height: 110px; width: auto; object-fit: contain; margin-bottom: 24px;">
         </div>
-    </div>
 
-    <!-- CONTENEDOR PRINCIPAL DE LA APP -->
+        <div id="login-role-selector" class="login-role-selector">
+            <p class="login-subtitle">Selecciona tu credencial de acceso operacional</p>
+            <div class="role-buttons">
+                <button id="btn-login-viewer" class="btn btn-viewer">👁️ Modo Visualizador</button>
+                <button id="btn-select-admin" class="btn btn-admin-select">🔒 Acceso Administrador</button>
+            </div>
+        </div>
+
+        <form id="login-admin-form" class="login-admin-form hidden">
+            <p class="login-subtitle">Ingresa la clave de encriptación de administrador</p>
+            <div class="input-group">
+                <label for="login-user">Usuario</label>
+                <input type="text" id="login-user" placeholder="admin" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label for="login-password">Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <p id="login-error-msg" class="error-msg hidden">⚠️ Credenciales inválidas</p>
+            <div class="form-actions">
+                <button type="button" id="btn-back-to-roles" class="btn btn-secondary">Atrás</button>
+                <button type="submit" class="btn btn-primary">Ingresar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <!-- PANEL PRINCIPAL DE OPERACIONES -->
     <div id="app-container" class="app-container hidden">
 
-        <!-- BARRA SUPERIOR (HEADER) -->
         <header class="main-header">
             <div class="header-brand">
-                <div class="logo-wrapper">
-                    <img src="2024 LOGO RGB_04.png" alt="Logo" class="header-logo">
-                </div>
-                <div class="brand-text">
-                    <h1>Portero Seguro</h1>
-                    <span class="brand-tag">Security Operations Center</span>
+                <div class="logo-text-group" style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Se reemplaza el emoji 🛡️ por la versión mini del logo para el header sin mover el texto -->
+                    <img src="logo.png" alt="Portero Seguro" class="header-logo-img" style="height: 38px; width: auto; object-fit: contain;">
+                    <div class="header-titles">
+                        <h2>Portero SEGURO</h2>
+                        <span class="brand-tag">Security Operations Center</span>
+                    </div>
                 </div>
             </div>
 
             <div class="header-actions">
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="search-input" placeholder="Buscar por estación, asesor o área...">
+                    <input type="text" id="search-input" placeholder="Buscar por asesor, estación o área...">
                 </div>
 
                 <div class="session-badge">
@@ -71,45 +70,44 @@
                     <span id="session-role-text"></span>
                 </div>
 
-                <button id="btn-logout" class="btn btn-logout" title="Cerrar Sesión">🚪</button>
+                <button id="btn-logout" class="btn-logout" title="Cerrar Sesión">🚪</button>
             </div>
         </header>
 
-        <!-- DASHBOARD DE MÉTRICAS -->
+        <!-- DASHBOARD METRICAS -->
         <section class="dashboard-metrics">
             <div class="metric-card metric-active">
-                <div class="metric-icon-pulse active"></div>
-                <div class="metric-data">
-                    <span class="metric-title">CONEXIONES ACTIVAS</span>
-                    <span id="counter-active" class="metric-value">0</span>
+                <div class="metric-header-row">
+                    <span class="metric-title">ESTACIONES ACTIVAS</span>
+                    <span class="pulse-indicator active"></span>
                 </div>
+                <span id="counter-active" class="metric-value">0</span>
             </div>
             <div class="metric-card metric-free">
-                <div class="metric-icon-pulse free"></div>
-                <div class="metric-data">
-                    <span class="metric-title">ESTACIONES LIBRES</span>
-                    <span id="counter-free" class="metric-value">0</span>
+                <div class="metric-header-row">
+                    <span class="metric-title">PUESTOS LIBRES</span>
+                    <span class="pulse-indicator free"></span>
                 </div>
+                <span id="counter-free" class="metric-value">0</span>
             </div>
             <div class="metric-card metric-disabled">
-                <div class="metric-icon-pulse disabled"></div>
-                <div class="metric-data">
+                <div class="metric-header-row">
                     <span class="metric-title">INACTIVAS / ALERTA</span>
-                    <span id="counter-disabled" class="metric-value">0</span>
+                    <span class="pulse-indicator disabled"></span>
                 </div>
+                <span id="counter-disabled" class="metric-value">0</span>
             </div>
             <div class="metric-card metric-time">
-                <div class="metric-icon-pulse time"></div>
-                <div class="metric-data">
+                <div class="metric-header-row">
                     <span class="metric-title">ÚLTIMA CONEXIÓN</span>
-                    <span id="last-update-time" class="metric-value">--:--:--</span>
+                    <span class="pulse-indicator time"></span>
                 </div>
+                <span id="last-update-time" class="metric-value">--:--:--</span>
             </div>
         </section>
 
-        <!-- BARRA DE FILTROS RÁPIDOS -->
+        <!-- CONTROLES DE FILTRO -->
         <div class="filters-bar">
-            <span class="filters-label">Filtrar vista:</span>
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="TODAS">Todas</button>
                 <button class="filter-btn" data-filter="ACTIVA">🟢 Activas</button>
@@ -118,35 +116,32 @@
             </div>
         </div>
 
-        <!-- CONTENIDO Y GRIDS DE ESTACIONES -->
+        <!-- GRIDS DE LOS CENTROS DE CONTROL -->
         <main class="grid-layout">
-            <!-- SECTOR CC1 -->
             <section class="sector-panel">
                 <div class="sector-header">
-                    <h2>Sector CC1 <span class="sector-subtitle">Módulos Planta de Operaciones</span></h2>
+                    <h3>SECTOR CC1 — Planta de Operaciones</h3>
                 </div>
-                <div id="grid-cc1" class="stations-grid">
-                    <!-- Se carga dinámicamente -->
-                </div>
+                <div id="grid-cc1" class="stations-grid"></div>
             </section>
 
-            <!-- SECTOR CC2 -->
             <section class="sector-panel">
                 <div class="sector-header">
-                    <h2>Sector CC2 <span class="sector-subtitle">Módulos ATC y Soporte</span></h2>
+                    <h3>SECTOR CC2 — ATC y Soporte</h3>
                 </div>
-                <div id="grid-cc2" class="stations-grid">
-                    <!-- Se carga dinámicamente -->
-                </div>
+                <div id="grid-cc2" class="stations-grid"></div>
             </section>
         </main>
+
+        <!-- MARCA DE AGUA INTEGRADA ABAJO EN EL CONTENEDOR PRINCIPAL -->
+        <div class="watermark-bottom-bg"></div>
     </div>
 
-    <!-- MODAL DE EDICIÓN FLOTANTE (SOLO ADMIN) -->
+    <!-- MODAL EDITAR -->
     <div id="edit-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 id="modal-station-code">Configuración</h3>
+                <h3 id="modal-station-code">Configuración Estación</h3>
                 <button type="button" id="modal-close-btn" class="modal-close">&times;</button>
             </div>
             <form id="edit-station-form">
@@ -154,17 +149,15 @@
 
                 <div class="form-group">
                     <div class="label-row">
-                        <label>Operador Asignado</label>
+                        <label>Asesor Asignado</label>
                         <button type="button" id="btn-toggle-input-mode" class="btn-toggle">✏️ Modo Manual</button>
                     </div>
-                    <div class="input-container-row">
-                        <select id="modal-advisor-name" class="form-input select-input"></select>
-                        <input type="text" id="modal-advisor-text" class="form-input text-input hidden" placeholder="Nombre completo del operador...">
-                    </div>
+                    <select id="modal-advisor-name" class="form-input"></select>
+                    <input type="text" id="modal-advisor-text" class="form-input hidden" placeholder="Escribir nombre del asesor...">
                 </div>
 
                 <div class="form-group">
-                    <label>Estado Operacional</label>
+                    <label>Estado del Módulo</label>
                     <div class="status-toggle-container">
                         <button type="button" class="btn-status-toggle status-activa" data-status="ACTIVA">🟢 ACTIVA</button>
                         <button type="button" class="btn-status-toggle status-desactivada" data-status="DESACTIVADA">🔴 INACTIVA</button>
@@ -174,7 +167,7 @@
 
                 <div class="modal-footer">
                     <button type="button" id="btn-cancel-edit" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-save">Aplicar Configuración</button>
+                    <button type="submit" class="btn btn-save">Guardar Cambios</button>
                 </div>
             </form>
         </div>
