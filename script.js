@@ -1,6 +1,7 @@
 /**
  * PORTERO SEGURO - Control de Estaciones
  * Motor de Operaciones Conectado a Supabase Cloud
+ * (Actualizado para el Nuevo Diseño Visual)
  */
 
 (function () {
@@ -106,6 +107,7 @@
     // 🌐 OBTENER LOS DATOS DESDE SUPABASE CLOUD
     async function loadDataFromSupabase() {
         try {
+            console.log("Cargando datos desde la nube (Supabase)...");
             const response = await fetch(`${SUPABASE_URL}/rest/v1/estaciones?select=*`, {
                 method: 'GET',
                 headers: {
@@ -124,6 +126,7 @@
             renderSystemGrid();
             recalculateDashboardMetrics();
             updateTimestamp();
+            console.log("Datos cargados y grid renderizado.");
         } catch (error) {
             console.error('❌ Error cargando la nube:', error);
             alert('Error al conectar con la base de datos en la nube. Verifica que la tabla "estaciones" exista y esté pública.');
@@ -133,6 +136,7 @@
     // 🌐 GUARDAR LOS CAMBIOS EN SUPABASE CLOUD
     async function updateStationInSupabase(id, advisor, status) {
         try {
+            console.log(`Guardando cambios para estación ${id}: Asesor=${advisor}, Estado=${status}...`);
             const response = await fetch(`${SUPABASE_URL}/rest/v1/estaciones?id=eq.${id}`, {
                 method: 'PATCH',
                 headers: {
@@ -147,7 +151,7 @@
             if (!response.ok) throw new Error('No se pudo actualizar en la nube');
 
             console.log(`🟢 Estación ${id} guardada con éxito.`);
-            await loadDataFromSupabase(); // Recarga los paneles de operaciones para aplicar cambios
+            await loadDataFromSupabase(); // Recarga los paneles para aplicar cambios visuales (incluyendo el color verde neón)
         } catch (error) {
             console.error('❌ Error guardando en la nube:', error);
             alert('No se pudo guardar el cambio en la base de datos de Supabase.');
@@ -156,7 +160,6 @@
 
     function populateExcelDatalist() {
         if (!DOM.modalAdvisorName) return;
-        const currentValue = DOM.modalAdvisorName.value;
         DOM.modalAdvisorName.innerHTML = '<option value="N/A">-- Ninguno / Vacío --</option>';
 
         EXCEL_DATABASE.forEach(user => {
@@ -165,8 +168,6 @@
             option.textContent = `${user.nombre} (${user.area})`;
             DOM.modalAdvisorName.appendChild(option);
         });
-
-        if (currentValue && currentValue !== "") DOM.modalAdvisorName.value = currentValue;
     }
 
     function setupEventListeners() {
@@ -246,8 +247,14 @@
         DOM.gridCC1.innerHTML = '';
         DOM.gridCC2.innerHTML = '';
 
+        let countCC1 = 1;
+        // Comenzamos estrictamente en 9
+        let countCC2 = 9;
+
         appState.stations.forEach(node => {
             const card = document.createElement('div');
+
+            // Aplicar la clase de estado en minúsculas (status-activa, status-libre, etc.)
             card.className = `station-card status-${node.status.toLowerCase()}`;
             card.dataset.id = node.id;
 
@@ -255,9 +262,22 @@
             const localUser = EXCEL_DATABASE.find(user => user.nombre === node.advisor);
             const areaLabel = localUser ? localUser.area : (node.status === 'LIBRE' ? 'Disponible' : 'Vigilancia');
 
+            // Limpieza y estandarización del valor del sector
+            const sectorEstandar = (node.sector || '').trim().toUpperCase();
+
+            let visualCode = node.code;
+            if (sectorEstandar === 'CC1') {
+                visualCode = `EST-1${countCC1.toString().padStart(2, '0')}`.toUpperCase();
+                countCC1++;
+            } else if (sectorEstandar === 'CC2') {
+                // Genera la secuencia exacta y la fuerza a MAYÚSCULAS: CC2-09, CC2-10, CC2-11, etc.
+                visualCode = `CC2-${countCC2.toString().padStart(2, '0')}`.toUpperCase();
+                countCC2++;
+            }
+
             card.innerHTML = `
                 <div class="station-card-header">
-                    <span class="station-code">${node.code}</span>
+                    <span class="station-code">${visualCode}</span>
                 </div>
                 <div class="station-advisor" title="${node.advisor}">${node.advisor}</div>
                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">${areaLabel}</div>
@@ -265,11 +285,11 @@
             `;
 
             card.addEventListener('click', () => {
-                if (appState.currentUserRole === 'ADMIN') openEditModal(node.id);
+                if (appState.currentUserRole === 'ADMIN') openEditModal(node.id, visualCode);
             });
 
-            if (node.sector === 'CC1') DOM.gridCC1.appendChild(card);
-            else if (node.sector === 'CC2') DOM.gridCC2.appendChild(card);
+            if (sectorEstandar === 'CC1') DOM.gridCC1.appendChild(card);
+            else if (sectorEstandar === 'CC2') DOM.gridCC2.appendChild(card);
         });
     }
 
@@ -315,26 +335,31 @@
         });
     }
 
-    function openEditModal(stationId) {
+    function openEditModal(stationId, visualCode) {
         const station = appState.stations.find(n => n.id === stationId);
         if (!station) return;
 
         DOM.modalStationId.value = station.id;
-        DOM.modalStationCode.textContent = `Configuración: ${station.id}`;
+        // Muestra el código visual correcto adaptado (ej: CC2-09) en el modal
+        DOM.modalStationCode.textContent = `Configuración: ${visualCode || station.id}`;
 
+        // Repopular datalist para asegurar que esté actualizado
         populateExcelDatalist();
 
+        // Configuración inicial del modo de input
         isManualInputMode = false;
         DOM.modalAdvisorText.classList.add('hidden');
         DOM.modalAdvisorName.classList.remove('hidden');
+        DOM.modalAdvisorText.value = "";
         DOM.btnToggleInputMode.textContent = "✏️ Modo Manual";
 
+        // Comprobar si el asesor actual está en la lista desplegable
         const existsInSelect = Array.from(DOM.modalAdvisorName.options).some(opt => opt.value === station.advisor);
 
         if (existsInSelect) {
             DOM.modalAdvisorName.value = station.advisor;
-            DOM.modalAdvisorText.value = "";
         } else {
+            // Si es un valor manual, cambiar al modo manual
             DOM.modalAdvisorName.value = "N/A";
             DOM.modalAdvisorText.value = station.advisor === 'N/A' ? '' : station.advisor;
             isManualInputMode = true;
@@ -343,13 +368,16 @@
             DOM.btnToggleInputMode.textContent = "📋 Modo Lista";
         }
 
+        // Configuración del estado
         selectedStatusTmp = station.status;
         updateToggleButtonsUI(selectedStatusTmp);
 
+        // Añadir listeners a los botones de estado del modal
         document.querySelectorAll('.btn-status-toggle').forEach(btn => {
             btn.onclick = function() {
                 selectedStatusTmp = this.dataset.status;
                 updateToggleButtonsUI(selectedStatusTmp);
+                // Si se selecciona LIBRE, limpiar campos de asesor
                 if (selectedStatusTmp === 'LIBRE') {
                     DOM.modalAdvisorName.value = 'N/A';
                     DOM.modalAdvisorText.value = '';
@@ -358,6 +386,7 @@
         });
 
         DOM.editModal.classList.remove('hidden');
+        console.log(`Modal abierto para estación ${stationId}.`);
     }
 
     function updateToggleButtonsUI(activeStatus) {
@@ -369,6 +398,7 @@
     function closeModal() {
         DOM.editModal.classList.add('hidden');
         DOM.editForm.reset();
+        console.log("Modal cerrado.");
     }
 
     function handleFormSubmit(event) {
@@ -377,8 +407,10 @@
         const selectedStatus = selectedStatusTmp;
 
         let advisorName = "N/A";
+        // Si el estado no es LIBRE, obtener el nombre del asesor
         if (selectedStatus !== 'LIBRE') {
             advisorName = isManualInputMode ? DOM.modalAdvisorText.value.trim() : DOM.modalAdvisorName.value;
+            // Asegurar un valor por defecto si está vacío
             if (!advisorName) advisorName = "N/A";
         }
 
@@ -388,6 +420,7 @@
         updateStationInSupabase(id, advisorName, selectedStatus);
     }
 
+    // Inicializar la aplicación cuando el DOM esté cargado
     document.addEventListener('DOMContentLoaded', init);
 
 })();
