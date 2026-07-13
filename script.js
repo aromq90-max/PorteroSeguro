@@ -1,6 +1,6 @@
 /**
  * PORTERO SEGURO - Control de Estaciones
- * Motor Autónomo Conectado a Supabase Cloud
+ * Motor de Operaciones Conectado a Supabase Cloud
  */
 
 (function () {
@@ -118,7 +118,7 @@
 
             appState.stations = await response.json();
 
-            // Ordenar alfabéticamente para mantener la estructura visual fija
+            // Ordenar por ID para mantener la estructura visual fija
             appState.stations.sort((a, b) => a.id.localeCompare(b.id));
 
             renderSystemGrid();
@@ -126,7 +126,7 @@
             updateTimestamp();
         } catch (error) {
             console.error('❌ Error cargando la nube:', error);
-            alert('Error al conectar con la base de datos en la nube. Verifica que la tabla "estaciones" tenga registros.');
+            alert('Error al conectar con la base de datos en la nube. Verifica que la tabla "estaciones" exista y esté pública.');
         }
     }
 
@@ -147,10 +147,10 @@
             if (!response.ok) throw new Error('No se pudo actualizar en la nube');
 
             console.log(`🟢 Estación ${id} guardada con éxito.`);
-            await loadDataFromSupabase(); // Recarga la cuadrícula para confirmar cambios
+            await loadDataFromSupabase(); // Recarga los paneles de operaciones para aplicar cambios
         } catch (error) {
             console.error('❌ Error guardando en la nube:', error);
-            alert('No se pudo guardar el cambio. Revisa tu conexión a internet.');
+            alert('No se pudo guardar el cambio en la base de datos de Supabase.');
         }
     }
 
@@ -186,12 +186,12 @@
                 DOM.modalAdvisorName.classList.add('hidden');
                 DOM.modalAdvisorText.classList.remove('hidden');
                 DOM.modalAdvisorText.focus();
-                DOM.btnToggleInputMode.textContent = "📋";
+                DOM.btnToggleInputMode.textContent = "📋 Modo Lista";
             } else {
                 DOM.modalAdvisorText.classList.add('hidden');
                 DOM.modalAdvisorName.classList.remove('hidden');
                 DOM.modalAdvisorName.focus();
-                DOM.btnToggleInputMode.textContent = "✏️";
+                DOM.btnToggleInputMode.textContent = "✏️ Modo Manual";
             }
         });
 
@@ -227,18 +227,17 @@
         appState.currentUserRole = role;
         if (role === 'ADMIN') {
             DOM.sessionRoleIcon.textContent = '🔒';
-            DOM.sessionRoleText.textContent = 'Modo Administrador';
-            DOM.appContainer.className = 'role-admin';
+            DOM.sessionRoleText.textContent = 'Administrador';
+            DOM.appContainer.className = 'app-container role-admin';
         } else {
             DOM.sessionRoleIcon.textContent = '👁️';
-            DOM.sessionRoleText.textContent = 'Modo Solo Visualizar';
-            DOM.appContainer.className = 'role-viewer';
+            DOM.sessionRoleText.textContent = 'Visualizador';
+            DOM.appContainer.className = 'app-container role-viewer';
         }
         DOM.loginOverlay.classList.add('hidden');
         DOM.appContainer.classList.remove('hidden');
         DOM.searchInput.value = '';
 
-        // Carga los datos globales compartidos
         loadDataFromSupabase();
     }
 
@@ -251,11 +250,20 @@
             const card = document.createElement('div');
             card.className = `station-card status-${node.status.toLowerCase()}`;
             card.dataset.id = node.id;
+
+            // Busca si pertenece a un área en la base de datos interna para mostrar la etiqueta
+            const localUser = EXCEL_DATABASE.find(user => user.nombre === node.advisor);
+            const areaLabel = localUser ? localUser.area : (node.status === 'LIBRE' ? 'Disponible' : 'Vigilancia');
+
             card.innerHTML = `
-                <div class="station-card-header"><span class="station-code">${node.code}</span></div>
+                <div class="station-card-header">
+                    <span class="station-code">${node.code}</span>
+                </div>
                 <div class="station-advisor" title="${node.advisor}">${node.advisor}</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">${areaLabel}</div>
                 <div class="station-badge-status">${getStatusIndicatorIcon(node.status)} ${node.status}</div>
             `;
+
             card.addEventListener('click', () => {
                 if (appState.currentUserRole === 'ADMIN') openEditModal(node.id);
             });
@@ -319,7 +327,7 @@
         isManualInputMode = false;
         DOM.modalAdvisorText.classList.add('hidden');
         DOM.modalAdvisorName.classList.remove('hidden');
-        DOM.btnToggleInputMode.textContent = "✏️";
+        DOM.btnToggleInputMode.textContent = "✏️ Modo Manual";
 
         const existsInSelect = Array.from(DOM.modalAdvisorName.options).some(opt => opt.value === station.advisor);
 
@@ -332,7 +340,7 @@
             isManualInputMode = true;
             DOM.modalAdvisorName.classList.add('hidden');
             DOM.modalAdvisorText.classList.remove('hidden');
-            DOM.btnToggleInputMode.textContent = "📋";
+            DOM.btnToggleInputMode.textContent = "📋 Modo Lista";
         }
 
         selectedStatusTmp = station.status;
@@ -376,7 +384,7 @@
 
         closeModal();
 
-        // Petición asíncrona directa hacia la nube
+        // Sincronizar de forma directa a Supabase Cloud
         updateStationInSupabase(id, advisorName, selectedStatus);
     }
 
