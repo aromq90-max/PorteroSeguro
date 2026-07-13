@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTERO SEGURO - Control de Estaciones</title>
+    <style>
+        :root {
+            --bg-main: #f4f6f9;
+            --bg-card: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+
+            --status-active: #48bb78;
+            --status-active-bg: #f0fff4;
+            --status-disabled: #f56565;
+            --status-disabled-bg: #fff5f5;
+            --status-free: #a0aec0;
+            --status-free-bg: #edf2f7;
+
+            --primary: #4a5568;
+            --primary-hover: #2d3748;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 24px;
+            color: #1a202c;
+            font-size: 24px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background-color: #3182ce;
+            color: white;
+        }
+
+        .btn-primary:hover { background-color: #2b6cb0; }
+
+        .btn-secondary {
+            background-color: #718096;
+            color: white;
+        }
+
+        .btn-secondary:hover { background-color: #4a5568; }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: #fff;
+        }
+
+        select.form-control {
+            height: 42px;
+            cursor: pointer;
+        }
+
+        .error-msg {
+            color: var(--status-disabled);
+            font-size: 14px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .header-app {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .brand-section h1 {
+            font-size: 22px;
+            color: #1a202c;
+        }
+
+        .brand-section p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 11px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 15px;
+            background-color: #f7fafc;
+        }
+
+        .metrics-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--status-free);
+        }
+
+        .metric-card.active { border-left-color: var(--status-active); }
+        .metric-card.disabled { border-left-color: var(--status-disabled); }
+
+        .metric-card .title { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+        .metric-card .value { font-size: 28px; font-weight: 700; color: #1a202c; margin-top: 5px; }
+
+        .sector-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            color: #2d3748;
+        }
+
+        .grid-stations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .station-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+        }
+
+        .role-admin .station-card { cursor: pointer; }
+        .role-admin .station-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .station-code { font-weight: 700; font-size: 14px; color: #4a5568; }
+        .station-advisor {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .station-badge-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .status-activa { background-color: var(--status-active-bg); border-top: 4px solid var(--status-active); }
+        .status-activa .station-badge-status { background: #c6f6d5; color: #22543d; }
+
+        .status-desactivada { background-color: var(--status-disabled-bg); border-top: 4px solid var(--status-disabled); }
+        .status-desactivada .station-badge-status { background: #fed7d7; color: #742a2a; }
+
+        .status-libre { background-color: var(--status-free-bg); border-top: 4px solid var(--status-free); }
+        .status-libre .station-badge-status { background: #e2e8f0; color: #4a5568; }
+        .status-libre .station-advisor { color: var(--text-secondary); font-style: italic; }
+
+        .search-mismatch { display: none !important; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal-body {
+            background: var(--bg-card);
+            padding: 28px;
+            border-radius: 10px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+        }
+
+        .modal-header h3 { font-size: 19px; color: #1a202c; margin-bottom: 20px; }
+
+        .close-x {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .status-toggle-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-status-toggle {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-status-toggle[data-status="ACTIVA"].active {
+            background: var(--status-active-bg);
+            border-color: var(--status-active);
+            color: #22543d;
+        }
+
+        .btn-status-toggle[data-status="DESACTIVADA"].active {
+            background: var(--status-disabled-bg);
+            border-color: var(--status-disabled);
+            color: #742a2a;
+        }
+
+        .btn-status-toggle[data-status="LIBRE"].active {
+            background: var(--status-free-bg);
+            border-color: var(--status-free);
+            color: #2d3748;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .modal-footer .btn { width: auto; margin-bottom: 0; padding: 10px 20px; }
+
+        .advisor-input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-toggle-input {
+            background: #e2e8f0;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2>PORTERO SEGURO</h2>
+
+            <div id="login-role-selector">
+                <button type="button" id="btn-login-viewer" class="btn btn-primary">👁️ Modo Solo Visualizar</button>
+                <button type="button" id="btn-select-admin" class="btn btn-secondary">🔒 Ingreso Administrador</button>
+            </div>
+
+            <form id="login-admin-form" class="hidden">
+                <div id="login-error-msg" class="error-msg hidden">Usuario o contraseña incorrectos</div>
+                <div class="form-group">
+                    <label for="login-user">Usuario</label>
+                    <input type="text" id="login-user" class="form-control" placeholder="Ej: admin">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                <button type="button" id="btn-back-to-roles" class="btn btn-secondary" style="background:none; color:var(--text-secondary); border:1px solid var(--border-color)">Regresar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+
+        <header class="header-app">
+            <div class="brand-section">
+                <h1>Portero Seguro 🛡️</h1>
+                <p><span id="session-role-icon"></span> <b id="session-role-text"></b> • Último cambio: <span id="last-update-time">00:00:00</span></p>
+            </div>
+
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Buscar por estación o nombre de asesor...">
+            </div>
+
+            <div>
+                <button type="button" id="btn-logout" class="btn btn-secondary" style="margin-bottom:0; padding:10px 18px; background-color:#e2e8f0; color:#4a5568;">Salir</button>
+            </div>
+        </header>
+
+        <section class="metrics-bar">
+            <div class="metric-card active">
+                <span class="title">🟢 ESTACIONES ACTIVAS</span>
+                <span id="counter-active" class="value">0</span>
+            </div>
+            <div class="metric-card disabled">
+                <span class="title">🔴 ESTACIONES DESACTIVADAS</span>
+                <span id="counter-disabled" class="value">0</span>
+            </div>
+            <div class="metric-card">
+                <span class="title">⚪ ESTACIONES LIBRES</span>
+                <span id="counter-free" class="value">0</span>
+            </div>
+        </section>
+
+        <h2 class="sector-title">Sector Divisional CC1 (Operaciones)</h2>
+        <div id="grid-cc1" class="grid-stations"></div>
+
+        <h2 class="sector-title">Sector Divisional CC2 (Soporte y Calidad)</h2>
+        <div id="grid-cc2" class="grid-stations"></div>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal-body">
+            <button type="button" id="modal-close-btn" class="close-x">&times;</button>
+
+            <div class="modal-header">
+                <h3 id="modal-station-code">Configuración de Estación</h3>
+            </div>
+
+            <form id="edit-station-form">
+                <input type="hidden" id="modal-station-id">
+
+                <label style="display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--text-secondary)">Estado Operativo</label>
+                <div class="status-toggle-container">
+                    <button type="button" class="btn-status-toggle" data-status="ACTIVA">🟢 ACTIVA</button>
+                    <button type="button" class="btn-status-toggle" data-status="DESACTIVADA">🔴 DESAC.</button>
+                    <button type="button" class="btn-status-toggle" data-status="LIBRE">⚪ LIBRE</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-advisor-name">Asesor Asignado</label>
+                    <div class="advisor-input-wrapper">
+                        <select id="modal-advisor-name" class="form-control">
+                            <option value="N/A">-- Ninguno / Vacío --</option>
+                        </select>
+                        <input type="text" id="modal-advisor-text" class="form-control hidden" placeholder="Escribir nombre a mano...">
+                        <button type="button" id="btn-toggle-input-mode" class="btn-toggle-input" title="Alternar escribir / seleccionar">✏️</button>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="btn-cancel-edit" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="background-color:#48bb78;">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
