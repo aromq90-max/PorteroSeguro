@@ -1,178 +1,830 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portero Seguro — SOC Control Panel</title>
-    <link class="styles" rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portero Seguro | Enterprise Monitoring Console</title>
+
+<style>
+/* =========================================================
+   PORTERO SEGURO - HIGH-END CYBER CONSOLE (UI/UX ADVANCED)
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root {
+    /* Paleta Principal de Marca */
+    --brand-orange: #E44010;
+    --brand-orange-glow: rgba(228, 64, 16, 0.4);
+    --brand-gray: #5D5D5D;
+    
+    /* Escala de grises oscura basada en la marca (Sin usar negro puro) */
+    --bg-dark: #121214;
+    --panel-bg: rgba(28, 28, 30, 0.85);
+    --panel-border: rgba(93, 93, 93, 0.3);
+    
+    /* Acentos */
+    --accent-cyan: #00f2fe;
+    --accent-gold: #ffb703;
+    
+    /* Turnos */
+    --morning-color: #00e676;
+    --afternoon-color: var(--brand-orange);
+    --night-color: #29b6f6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: 'Rajdhani', sans-serif;
+    color: #ffffff;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 30%, #222328 0%, var(--bg-dark) 90%);
+}
+
+/* Dashboard Layout */
+.dashboard {
+    width: 100vw;
+    height: 100vh;
+    padding: 12px;
+    display: grid;
+    grid-template-rows: 75px 1fr 230px 30px;
+    gap: 10px;
+}
+
+/* =========================================================
+   HEADER ADVANCED
+========================================================= */
+
+.header {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    align-items: center;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 0 24px;
+    box-shadow: 0 0 25px rgba(228, 64, 16, 0.08);
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--brand-orange), #ff6b3b);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px var(--brand-orange-glow);
+}
+
+.brand-logo svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffffff;
+}
+
+.brand-text h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.brand-text h2 span {
+    color: var(--brand-orange);
+    text-shadow: 0 0 10px var(--brand-orange-glow);
+}
+
+.brand-text p {
+    font-size: 11px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
+}
+
+.header-title {
+    text-align: center;
+}
+
+.header-title h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(to right, #ffffff, var(--brand-gray));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-title p {
+    font-size: 12px;
+    color: var(--brand-orange);
+    letter-spacing: 4px;
+    font-weight: 700;
+}
+
+.header-clock {
+    text-align: right;
+}
+
+.time-display {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+}
+
+.date-display {
+    font-size: 11px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   CARDS DE TURNOS
+========================================================= */
+
+.shifts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    min-height: 0;
+}
+
+.shift-card {
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    display: grid;
+    grid-template-rows: 65px 1fr;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.shift-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.morning .shift-header { background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), transparent); }
+.afternoon .shift-header { background: linear-gradient(90deg, rgba(228, 64, 16, 0.25), transparent); }
+.night .shift-header { background: linear-gradient(90deg, rgba(41, 182, 246, 0.15), transparent); }
+
+.shift-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shift-icon {
+    font-size: 26px;
+}
+
+.shift-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.shift-time {
+    font-size: 12px;
+    color: #a1a1aa;
+    font-weight: 600;
+}
+
+.badge-count {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--panel-border);
+    padding: 4px 14px;
+    border-radius: 8px;
+    text-align: right;
+}
+
+.badge-count .num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.morning .badge-count .num { color: var(--morning-color); text-shadow: 0 0 10px var(--morning-color); }
+.afternoon .badge-count .num { color: var(--afternoon-color); text-shadow: 0 0 10px var(--brand-orange-glow); }
+.night .badge-count .num { color: var(--night-color); text-shadow: 0 0 10px var(--night-color); }
+
+.badge-count .lbl {
+    font-size: 9px;
+    color: #a1a1aa;
+    display: block;
+    font-weight: 700;
+}
+
+/* Lista de Edificios */
+.building-table {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.table-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 18px;
+    font-size: 12px;
+    color: var(--brand-orange);
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: rgba(228, 64, 16, 0.05);
+    border-bottom: 1px solid var(--panel-border);
+}
+
+.scroll-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.scroll-track {
+    display: flex;
+    flex-direction: column;
+    animation: scrollUp 20s linear infinite;
+}
+
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.building-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.morning .status-pill { color: var(--morning-color); }
+.morning .status-dot { background: var(--morning-color); box-shadow: 0 0 8px var(--morning-color); }
+
+.afternoon .status-pill { color: var(--afternoon-color); }
+.afternoon .status-dot { background: var(--afternoon-color); box-shadow: 0 0 8px var(--brand-orange-glow); }
+
+.night .status-pill { color: var(--night-color); }
+.night .status-dot { background: var(--night-color); box-shadow: 0 0 8px var(--night-color); }
+
+/* =========================================================
+   PARTE INFERIOR
+========================================================= */
+
+.bottom-section {
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.bg-monitoring-room {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: brightness(0.3) contrast(1.2) sepia(0.2) hue-rotate(-20deg);
+}
+
+.overlay-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 240px 260px 1fr 340px;
+    gap: 12px;
+    padding: 12px;
+}
+
+.stat-card {
+    background: rgba(18, 18, 20, 0.88);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.stat-card .title {
+    font-size: 12px;
+    color: #a1a1aa;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.stat-card .value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--brand-orange);
+    text-shadow: 0 0 20px var(--brand-orange-glow);
+    line-height: 1;
+    margin: 6px 0;
+}
+
+.stat-card .sub {
+    font-size: 10px;
+    color: #a1a1aa;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.status-badge-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(0, 230, 118, 0.15);
+    border: 2px solid var(--morning-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0;
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+}
+
+.status-badge-circle svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--morning-color);
+}
+
+.status-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--morning-color);
+    letter-spacing: 0.5px;
+}
+
+.center-spacer {
+    pointer-events: none;
+}
+
+.critical-card {
+    background: rgba(18, 18, 20, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--brand-orange);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 25px var(--brand-orange-glow);
+}
+
+.critical-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--brand-orange);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--brand-orange-glow);
+    margin-bottom: 6px;
+    text-shadow: 0 0 10px var(--brand-orange-glow);
+}
+
+.critical-scroll {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.critical-track {
+    display: flex;
+    flex-direction: column;
+    animation: scrollCritical 12s linear infinite;
+}
+
+@keyframes scrollCritical {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.critical-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.star-icon {
+    color: var(--brand-orange);
+    font-size: 14px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #a1a1aa;
+    font-weight: 600;
+}
+
+.footer strong {
+    color: var(--brand-orange);
+}
+</style>
 </head>
+
 <body>
 
-  <!-- PANTALLA DE LOGEO -->
-<div id="login-overlay" class="login-overlay">
-    <div class="login-card">
-        <div class="login-logo-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <!-- Se eliminó el texto HTML redundante y se agrandó el logo que ya incluye el nombre -->
-            <img src="https://github.com/aromq90-max/PorteroSeguro/blob/main/Logo.png?raw=true" alt="Portero Seguro" class="login-logo-img" style="height: 110px; width: auto; object-fit: contain; margin-bottom: 24px;">
+<div class="dashboard">
+
+    <!-- HEADER PRO -->
+    <header class="header">
+        <div class="brand-wrapper">
+            <div class="brand-logo">
+                <svg viewBox="0 0 24 24"><path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7A3,3 0 0,1 15,10C15,11.26 14.22,12.34 13.11,12.77C13.67,13.71 14.5,14.73 16,15.5V17C14.16,17 12.8,15.84 12,14.96C11.2,15.84 9.84,17 8,17V15.5C9.5,14.73 10.33,13.71 10.89,12.77C9.78,12.34 9,11.26 9,10A3,3 0 0,1 12,7Z"/></svg>
+            </div>
+            <div class="brand-text">
+                <h2>PORTERO <span>SEGURO</span></h2>
+                <p>Security Command Center</p>
+            </div>
         </div>
 
-        <div id="login-role-selector" class="login-role-selector">
-            <p class="login-subtitle">Selecciona tu credencial de acceso operacional</p>
-            <div class="role-buttons">
-                <button id="btn-login-viewer" class="btn btn-viewer">👁️ Modo Visualizador</button>
-                <button id="btn-select-admin" class="btn btn-admin-select">🔒 Acceso Administrador</button>
-            </div>
+        <div class="header-title">
+            <h1>MONITOREO DE EDIFICIOS</h1>
+            <p>SISTEMA CONTROLADOR EN TIEMPO REAL</p>
         </div>
 
-        <form id="login-admin-form" class="login-admin-form hidden">
-            <p class="login-subtitle">Ingresa la clave de encriptación de administrador</p>
-            <div class="input-group">
-                <label for="login-user">Usuario</label>
-                <input type="text" id="login-user" placeholder="admin" required autocomplete="off">
+        <div class="header-clock">
+            <div class="time-display" id="clock">00:00:00</div>
+            <div class="date-display" id="date">CARGANDO...</div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN DE TURNO ACTUAL -->
+    <section class="shifts-grid">
+
+        <article class="shift-card morning" id="currentShiftCard">
+            <div class="shift-header">
+                <div class="shift-info">
+                    <span class="shift-icon" id="shiftIcon">☀</span>
+                    <div>
+                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA</div>
+                        <div class="shift-time" id="shiftTime">06:45 - 18:14:59 HRS</div>
+                    </div>
+                </div>
+
+                <div class="badge-count">
+                    <span class="num" id="shiftCount">0</span>
+                    <span class="lbl">EDIFICIOS</span>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="login-password">Contraseña</label>
-                <input type="password" id="login-password" placeholder="••••••••" required>
+
+            <div class="building-list building-table">
+                <div class="table-head">
+                    <span>EDIFICIO</span>
+                    <span>ESTADO</span>
+                </div>
+
+                <div class="scroll-container">
+                    <div class="scroll-track" id="buildingTrack">
+                        <div class="building-row">
+                            <span>CARGANDO EDIFICIOS...</span>
+                            <span class="status-pill">
+                                <span class="status-dot"></span>CONECTANDO
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p id="login-error-msg" class="error-msg hidden">⚠️ Credenciales inválidas</p>
-            <div class="form-actions">
-                <button type="button" id="btn-back-to-roles" class="btn btn-secondary">Atrás</button>
-                <button type="submit" class="btn btn-primary">Ingresar</button>
+        </article>
+
+    </section>
+
+    <!-- SECCIÓN INFERIOR PRO -->
+    <section class="bottom-section">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80" class="bg-monitoring-room" alt="Control Room">
+
+        <div class="overlay-content">
+            <div class="stat-card">
+                <span class="title">TOTAL EDIFICIOS</span>
+                <span class="value" id="totalBuildings">0</span>
+                <span class="sub">EDIFICIOS REGISTRADOS</span>
             </div>
-        </form>
-    </div>
+
+            <div class="stat-card">
+                <span class="title">ESTADO GENERAL</span>
+                <div class="status-badge-circle">
+                    <svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/></svg>
+                </div>
+                <span class="status-text" id="generalStatus">CARGANDO</span>
+                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONECTANDO CON GOOGLE SHEETS</span>
+            </div>
+
+            <div class="center-spacer"></div>
+
+            <div class="critical-card">
+                <div class="critical-header">
+                    <span>★ EDIFICIOS CRÍTICOS / VIP</span>
+                </div>
+                <div class="critical-scroll">
+                    <div class="critical-track">
+                        <div class="critical-row"><span class="star-icon">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>SEDE CENTRAL PORTERO SEGURO</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span>📢 OPERACIÓN EN VIVO • RED DE MONITOREO UNIFICADA</span>
+        <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong> ♥</span>
+    </footer>
+
 </div>
 
-    <!-- PANEL PRINCIPAL DE OPERACIONES -->
-    <div id="app-container" class="app-container hidden">
+<script>
+/* =========================================================
+   URL DE TU GOOGLE SHEET PUBLICADO
+========================================================= */
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy9pN3-qWESrzI_-QD1CY50jffXSu2a0CoLnCAG5KdJb2D5deDTRwjhjldJXdavHwQY33oOKoO7Xmb/pub?output=csv";
 
-        <header class="main-header">
-            <div class="header-brand">
-                <div class="logo-text-group" style="display: flex; align-items: center; gap: 12px;">
-                    <!-- Se reemplaza el emoji 🛡️ por la versión mini del logo para el header sin mover el texto -->
-                    <img src="https://github.com/aromq90-max/PorteroSeguro/blob/main/Logo.png?raw=true" alt="Portero Seguro" class="header-logo-img" style="height: 38px; width: auto; object-fit: contain;">
-                    <div class="header-titles">
-                        <h2>Portero SEGURO</h2>
-                        <span class="brand-tag">Security Operations Center</span>
-                    </div>
-                </div>
-            </div>
+let buildings = [];
+let lastSuccessfulData = [];
 
-            <div class="header-actions">
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="search-input" placeholder="Buscar por asesor, estación o área...">
-                </div>
+function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent = now.toLocaleTimeString("es-PE", { hour12: false });
+    document.getElementById("date").textContent = now.toLocaleDateString("es-PE", {
+        weekday: "long", day: "2-digit", month: "long", year: "numeric"
+    }).toUpperCase();
+    renderCurrentShift();
+}
 
-                <div class="session-badge">
-                    <span id="session-role-icon"></span>
-                    <span id="session-role-text"></span>
-                </div>
+function timeToMinutes(value) {
+    if (value === undefined || value === null) return null;
+    let s = String(value).trim();
+    if (!s) return null;
+    const match = s.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+    if (!match) return null;
+    const h = Number(match[1]);
+    const m = Number(match[2]);
+    if (h > 23 || m > 59) return null;
+    return h * 60 + m;
+}
 
-                <button id="btn-logout" class="btn-logout" title="Cerrar Sesión">🚪</button>
-            </div>
-        </header>
+function currentShift() {
+    const now = new Date();
+    const minutes = now.getHours() * 60 + now.getMinutes();
 
-        <!-- DASHBOARD METRICAS -->
-        <section class="dashboard-metrics">
-            <div class="metric-card metric-active">
-                <div class="metric-header-row">
-                    <span class="metric-title">ESTACIONES ACTIVAS</span>
-                    <span class="pulse-indicator active"></span>
-                </div>
-                <span id="counter-active" class="metric-value">0</span>
-            </div>
-            <div class="metric-card metric-free">
-                <div class="metric-header-row">
-                    <span class="metric-title">PUESTOS LIBRES</span>
-                    <span class="pulse-indicator free"></span>
-                </div>
-                <span id="counter-free" class="metric-value">0</span>
-            </div>
-            <div class="metric-card metric-disabled">
-                <div class="metric-header-row">
-                    <span class="metric-title">INACTIVAS / ALERTA</span>
-                    <span class="pulse-indicator disabled"></span>
-                </div>
-                <span id="counter-disabled" class="metric-value">0</span>
-            </div>
-            <div class="metric-card metric-time">
-                <div class="metric-header-row">
-                    <span class="metric-title">ÚLTIMA CONEXIÓN</span>
-                    <span class="pulse-indicator time"></span>
-                </div>
-                <span id="last-update-time" class="metric-value">--:--:--</span>
-            </div>
-        </section>
+    if (minutes >= 6 * 60 + 45 && minutes < 18 * 60 + 15) {
+        return { key: "morning", title: "TURNO MAÑANA", time: "06:45 - 18:14:59 HRS", icon: "☀" };
+    }
+    if (minutes >= 18 * 60 + 15 && minutes < 22 * 60) {
+        return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 21:59:59 HRS", icon: "🌤" };
+    }
+    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:44:59 HRS", icon: "🌙" };
+}
 
-        <!-- CONTROLES DE FILTRO -->
-        <div class="filters-bar">
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="TODAS">Todas</button>
-                <button class="filter-btn" data-filter="ACTIVA">🟢 Activas</button>
-                <button class="filter-btn" data-filter="LIBRE">⚪ Libres</button>
-                <button class="filter-btn" data-filter="DESACTIVADA">🔴 Inactivas</button>
-            </div>
+function isBuildingActiveNow(building) {
+    const turno = (building.turno || "").trim().toUpperCase();
+    const horario = (building.horario || "").trim().toUpperCase();
+
+    if (turno.includes("24") || horario.includes("24")) return true;
+
+    const start = timeToMinutes(building.horaInicio);
+    const end = timeToMinutes(building.horaFin);
+
+    // Si no hay horas específicas definidas, lo muestra por defecto
+    if (start === null || end === null) return true;
+
+    const now = new Date();
+    const current = now.getHours() * 60 + now.getMinutes();
+
+    if (start <= end) return current >= start && current <= end;
+    return current >= start || current <= end;
+}
+
+function parseCSV(csv) {
+    const rows = [];
+    let row = [];
+    let value = "";
+    let insideQuotes = false;
+
+    for (let i = 0; i < csv.length; i++) {
+        const char = csv[i];
+        if (char === '"') {
+            if (insideQuotes && csv[i + 1] === '"') {
+                value += '"';
+                i++;
+            } else {
+                insideQuotes = !insideQuotes;
+            }
+        } else if (char === "," && !insideQuotes) {
+            row.push(value.trim().replace(/^"|"$/g, ''));
+            value = "";
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+            if (char === "\r" && csv[i + 1] === "\n") i++;
+            row.push(value.trim().replace(/^"|"$/g, ''));
+            value = "";
+            if (row.some(v => v !== "")) rows.push(row);
+            row = [];
+        } else {
+            value += char;
+        }
+    }
+    if (value !== "" || row.length) {
+        row.push(value.trim().replace(/^"|"$/g, ''));
+        if (row.some(v => v !== "")) rows.push(row);
+    }
+    return rows;
+}
+
+async function loadBuildings() {
+    try {
+        const url = SHEET_CSV_URL + "&t=" + Date.now();
+        const response = await fetch(url, { method: "GET", cache: "no-store" });
+
+        if (!response.ok) throw new Error("HTTP " + response.status);
+
+        const csv = await response.text();
+        const rows = parseCSV(csv);
+
+        if (rows.length < 2) throw new Error("Sin filas suficientes en Google Sheets.");
+
+        // Detección inteligente de columnas por encabezado
+        const headers = rows[0].map(h => h.toLowerCase().trim());
+        
+        let idxNombre = headers.findIndex(h => h.includes("nombre") || h.includes("edificio"));
+        if (idxNombre === -1) idxNombre = 1; // Fallback a columna B si no encuentra encabezado
+
+        let idxTurno = headers.findIndex(h => h.includes("turno"));
+        let idxHorario = headers.findIndex(h => h.includes("horario"));
+        let idxHoraInicio = headers.findIndex(h => h.includes("inicio"));
+        let idxHoraFin = headers.findIndex(h => h.includes("fin"));
+        let idxDistrito = headers.findIndex(h => h.includes("distrito"));
+
+        buildings = rows.slice(1)
+            .filter(row => row[idxNombre] && row[idxNombre].trim() !== "")
+            .map(row => ({
+                nombre: row[idxNombre] || "",
+                turno: idxTurno !== -1 ? row[idxTurno] : "",
+                horario: idxHorario !== -1 ? row[idxHorario] : "",
+                horaInicio: idxHoraInicio !== -1 ? row[idxHoraInicio] : "",
+                horaFin: idxHoraFin !== -1 ? row[idxHoraFin] : "",
+                distrito: idxDistrito !== -1 ? row[idxDistrito] : ""
+            }));
+
+        lastSuccessfulData = buildings;
+        renderCurrentShift();
+
+        document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
+
+    } catch (error) {
+        console.error("Error leyendo Google Sheets:", error);
+        if (lastSuccessfulData.length) {
+            buildings = lastSuccessfulData;
+        }
+        document.getElementById("generalSub").textContent = "ERROR AL CARGAR • VERIFICA CONEXIÓN O SERVIDOR LOCAL";
+        renderCurrentShift();
+    }
+}
+
+function renderCurrentShift() {
+    const shift = currentShift();
+    const card = document.getElementById("currentShiftCard");
+    const icon = document.getElementById("shiftIcon");
+    const title = document.getElementById("shiftTitle");
+    const time = document.getElementById("shiftTime");
+    const track = document.getElementById("buildingTrack");
+    const count = document.getElementById("shiftCount");
+
+    card.classList.remove("morning", "afternoon", "night");
+    card.classList.add(shift.key);
+
+    icon.textContent = shift.icon;
+    title.textContent = shift.title;
+    time.textContent = shift.time;
+
+    const activeBuildings = buildings.filter(isBuildingActiveNow);
+
+    activeBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
+
+    count.textContent = activeBuildings.length;
+    document.getElementById("totalBuildings").textContent = buildings.length;
+
+    if (!activeBuildings.length) {
+        track.innerHTML = `
+            <div class="building-row">
+                <span>NO HAY EDIFICIOS REGISTRADOS</span>
+                <span class="status-pill">
+                    <span class="status-dot"></span>SIN REGISTROS
+                </span>
+            </div>`;
+        return;
+    }
+
+    const rows = activeBuildings.map(b => `
+        <div class="building-row">
+            <span>
+                ${escapeHTML(b.nombre)}
+                ${b.distrito ? `<small style="display:block;color:#71717a;font-size:10px;margin-top:2px;">${escapeHTML(b.distrito)}</small>` : ""}
+            </span>
+            <span class="status-pill">
+                <span class="status-dot"></span>ACTIVO
+            </span>
         </div>
+    `).join("");
 
-        <!-- GRIDS DE LOS CENTROS DE CONTROL -->
-        <main class="grid-layout">
-            <section class="sector-panel">
-                <div class="sector-header">
-                    <h3>SECTOR CC1</h3>
-                </div>
-                <div id="grid-cc1" class="stations-grid"></div>
-            </section>
+    const duplicate = activeBuildings.length >= 5 ? rows : "";
+    track.innerHTML = rows + duplicate;
+    track.style.animation = activeBuildings.length >= 5 ? "" : "none";
 
-            <section class="sector-panel">
-                <div class="sector-header">
-                    <h3>SECTOR CC2</h3>
-                </div>
-                <div id="grid-cc2" class="stations-grid"></div>
-            </section>
-        </main>
+    document.getElementById("generalStatus").textContent = activeBuildings.length > 0 ? "OPERATIVO" : "SIN EDIFICIOS";
+}
 
-        <!-- MARCA DE AGUA INTEGRADA ABAJO EN EL CONTENEDOR PRINCIPAL -->
-        <div class="watermark-bottom-bg"></div>
-    </div>
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-    <!-- MODAL EDITAR -->
-    <div id="edit-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 id="modal-station-code">Configuración Estación</h3>
-                <button type="button" id="modal-close-btn" class="modal-close">&times;</button>
-            </div>
-            <form id="edit-station-form">
-                <input type="hidden" id="modal-station-id">
+setInterval(updateClock, 1000);
+updateClock();
+loadBuildings();
+setInterval(loadBuildings, 5 * 60 * 1000);
+setInterval(renderCurrentShift, 60 * 1000);
+</script>
 
-                <div class="form-group">
-                    <div class="label-row">
-                        <label>Asesor Asignado</label>
-                        <button type="button" id="btn-toggle-input-mode" class="btn-toggle">✏️ Modo Manual</button>
-                    </div>
-                    <select id="modal-advisor-name" class="form-input"></select>
-                    <input type="text" id="modal-advisor-text" class="form-input hidden" placeholder="Escribir nombre del asesor...">
-                </div>
-
-                <div class="form-group">
-                    <label>Estado del Módulo</label>
-                    <div class="status-toggle-container">
-                        <button type="button" class="btn-status-toggle status-activa" data-status="ACTIVA">🟢 ACTIVA</button>
-                        <button type="button" class="btn-status-toggle status-desactivada" data-status="DESACTIVADA">🔴 INACTIVA</button>
-                        <button type="button" class="btn-status-toggle status-libre" data-status="LIBRE">⚪ LIBRE</button>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" id="btn-cancel-edit" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-save">Guardar Cambios</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
