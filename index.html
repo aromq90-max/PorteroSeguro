@@ -221,12 +221,11 @@ body {
 .scroll-track {
     display: flex;
     flex-direction: column;
-    animation: scrollUp 200s linear infinite;
+    will-change: transform;
+    animation: scrollContinuous 40s linear infinite;
 }
 
-.scroll-track:hover { animation-play-state: paused; }
-
-@keyframes scrollUp {
+@keyframes scrollContinuous {
     0% { transform: translateY(0); }
     100% { transform: translateY(-50%); }
 }
@@ -244,21 +243,23 @@ body {
 .status-pill {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
+    gap: 8px;
+    font-size: 13px;
     font-weight: 800;
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 230, 118, 0.12);
+    color: var(--morning-color);
+    border: 1px solid rgba(0, 230, 118, 0.3);
 }
 
-.status-dot { width: 10px; height: 10px; border-radius: 50%; }
-.morning .status-pill { color: var(--morning-color); }
-.morning .status-dot { background: var(--morning-color); box-shadow: 0 0 8px var(--morning-color); }
-.afternoon .status-pill { color: var(--afternoon-color); }
-.afternoon .status-dot { background: var(--afternoon-color); box-shadow: 0 0 8px var(--brand-orange-glow); }
-.night .status-pill { color: var(--night-color); }
-.night .status-dot { background: var(--night-color); box-shadow: 0 0 8px var(--night-color); }
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--morning-color);
+    box-shadow: 0 0 8px var(--morning-color);
+}
 
 /* BOTTOM SECTION */
 .bottom-section {
@@ -420,14 +421,14 @@ body {
             <div class="building-table">
                 <div class="table-head">
                     <span>EDIFICIO</span>
-                    <span>HORARIO ATENCIÓN</span>
+                    <span>ESTADO</span>
                 </div>
 
                 <div class="scroll-container">
                     <div class="scroll-track" id="buildingTrack">
                         <div class="building-row">
                             <span>CARGANDO EDIFICIOS...</span>
-                            <span class="status-pill"><span class="status-dot"></span>CONECTANDO</span>
+                            <span class="status-pill"><span class="status-dot"></span>ACTIVO</span>
                         </div>
                     </div>
                 </div>
@@ -493,6 +494,7 @@ const COL_TARDE  = 34; // Columna AI (TARDE)
 const COL_NOCHE  = 35; // Columna AJ (NOCHE)
 
 let allBuildings = [];
+let lastShiftKey = "";
 
 function updateClock() {
     const now = new Date();
@@ -500,7 +502,13 @@ function updateClock() {
     document.getElementById("date").textContent = now.toLocaleDateString("es-PE", {
         weekday: "long", day: "2-digit", month: "long", year: "numeric"
     }).toUpperCase();
-    renderCurrentShift();
+    
+    // Solo re-renderiza si cambia la franja horaria real del turno
+    const currentKey = currentShift().key;
+    if (currentKey !== lastShiftKey) {
+        lastShiftKey = currentKey;
+        renderCurrentShift();
+    }
 }
 
 function currentShift() {
@@ -614,20 +622,26 @@ function renderCurrentShift() {
     const track = document.getElementById("buildingTrack");
 
     if (!edificiosDelTurno.length) {
+        track.style.animation = "none";
         track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS ACTIVOS EN ESTE TURNO</span></div>`;
         return;
     }
 
-    const htmlRows = edificiosDelTurno.map(b => `
+    const singleBlockHtml = edificiosDelTurno.map(b => `
         <div class="building-row">
             <span>${escapeHTML(b.nombre)}</span>
             <span class="status-pill">
-                <span class="status-dot"></span>${escapeHTML(b.inicio || '06:45')} - ${escapeHTML(b.fin || '18:15')} HRS
+                <span class="status-dot"></span>ACTIVO
             </span>
         </div>
     `).join("");
 
-    track.innerHTML = htmlRows + htmlRows;
+    // Multiplica las listas para crear un bucle visual infinito perfectamente fluido
+    track.innerHTML = singleBlockHtml + singleBlockHtml + singleBlockHtml + singleBlockHtml;
+    
+    // Ajuste dinámico de velocidad según la cantidad de registros
+    const duration = Math.max(15, edificiosDelTurno.length * 2.5);
+    track.style.animation = `scrollContinuous ${duration}s linear infinite`;
 }
 
 function escapeHTML(str) {
