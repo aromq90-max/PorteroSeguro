@@ -136,7 +136,7 @@ body {
     font-weight: 700;
 }
 
-/* CARD DE TURNO */
+/* CARD TURNO */
 .shifts-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -173,20 +173,9 @@ body {
     gap: 12px;
 }
 
-.shift-icon {
-    font-size: 26px;
-}
-
-.shift-title {
-    font-size: 17px;
-    font-weight: 800;
-}
-
-.shift-time {
-    font-size: 13px;
-    color: var(--brand-orange);
-    font-weight: 700;
-}
+.shift-icon { font-size: 26px; }
+.shift-title { font-size: 17px; font-weight: 800; }
+.shift-time { font-size: 13px; color: var(--brand-orange); font-weight: 700; }
 
 .badge-count {
     background: rgba(0, 0, 0, 0.4);
@@ -196,23 +185,14 @@ body {
     text-align: right;
 }
 
-.badge-count .num {
-    font-size: 22px;
-    font-weight: 900;
-}
-
+.badge-count .num { font-size: 22px; font-weight: 900; }
 .morning .badge-count .num { color: var(--morning-color); }
 .afternoon .badge-count .num { color: var(--afternoon-color); }
 .night .badge-count .num { color: var(--night-color); }
 
-.badge-count .lbl {
-    font-size: 9px;
-    color: #a1a1aa;
-    display: block;
-    font-weight: 700;
-}
+.badge-count .lbl { font-size: 9px; color: #a1a1aa; display: block; font-weight: 700; }
 
-/* TABLA DE EDIFICIOS */
+/* TABLA */
 .building-table {
     display: flex;
     flex-direction: column;
@@ -244,9 +224,7 @@ body {
     animation: scrollUp 200s linear infinite;
 }
 
-.scroll-track:hover {
-    animation-play-state: paused;
-}
+.scroll-track:hover { animation-play-state: paused; }
 
 @keyframes scrollUp {
     0% { transform: translateY(0); }
@@ -274,22 +252,15 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
+.status-dot { width: 10px; height: 10px; border-radius: 50%; }
 .morning .status-pill { color: var(--morning-color); }
 .morning .status-dot { background: var(--morning-color); box-shadow: 0 0 8px var(--morning-color); }
-
 .afternoon .status-pill { color: var(--afternoon-color); }
 .afternoon .status-dot { background: var(--afternoon-color); box-shadow: 0 0 8px var(--brand-orange-glow); }
-
 .night .status-pill { color: var(--night-color); }
 .night .status-dot { background: var(--night-color); box-shadow: 0 0 8px var(--night-color); }
 
-/* PIE Y ESTADÍSTICAS */
+/* BOTTOM SECTION */
 .bottom-section {
     position: relative;
     border-radius: 12px;
@@ -331,25 +302,9 @@ body {
     text-align: center;
 }
 
-.stat-card .title {
-    font-size: 11px;
-    color: #a1a1aa;
-    font-weight: 700;
-}
-
-.stat-card .value {
-    font-size: 48px;
-    font-weight: 900;
-    color: var(--brand-orange);
-    line-height: 1;
-    margin: 6px 0;
-}
-
-.stat-card .sub {
-    font-size: 10px;
-    color: #a1a1aa;
-    font-weight: 700;
-}
+.stat-card .title { font-size: 11px; color: #a1a1aa; font-weight: 700; }
+.stat-card .value { font-size: 48px; font-weight: 900; color: var(--brand-orange); line-height: 1; margin: 6px 0; }
+.stat-card .sub { font-size: 10px; color: #a1a1aa; font-weight: 700; }
 
 .status-badge-circle {
     width: 48px;
@@ -363,17 +318,8 @@ body {
     margin: 6px 0;
 }
 
-.status-badge-circle svg {
-    width: 26px;
-    height: 26px;
-    fill: var(--morning-color);
-}
-
-.status-text {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--morning-color);
-}
+.status-badge-circle svg { width: 26px; height: 26px; fill: var(--morning-color); }
+.status-text { font-size: 13px; font-weight: 800; color: var(--morning-color); }
 
 .critical-card {
     background: rgba(18, 19, 21, 0.92);
@@ -394,22 +340,10 @@ body {
     margin-bottom: 6px;
 }
 
-.critical-scroll {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-}
+.critical-scroll { flex: 1; overflow: hidden; position: relative; }
+.critical-track { display: flex; flex-direction: column; animation: scrollCritical 25s linear infinite; }
 
-.critical-track {
-    display: flex;
-    flex-direction: column;
-    animation: scrollCritical 25s linear infinite;
-}
-
-@keyframes scrollCritical {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
-}
+@keyframes scrollCritical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 
 .critical-row {
     display: flex;
@@ -421,9 +355,7 @@ body {
     font-weight: 700;
 }
 
-.star-icon {
-    color: var(--brand-orange);
-}
+.star-icon { color: var(--brand-orange); }
 
 .footer {
     display: flex;
@@ -438,9 +370,7 @@ body {
     font-weight: 600;
 }
 
-.footer strong {
-    color: var(--brand-orange);
-}
+.footer strong { color: var(--brand-orange); }
 </style>
 </head>
 
@@ -476,7 +406,7 @@ body {
                 <div class="shift-info">
                     <span class="shift-icon" id="shiftIcon">☀</span>
                     <div>
-                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA</div>
+                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA 06:45 - 18:15</div>
                         <div class="shift-time" id="shiftTime">06:45 - 18:15 HRS</div>
                     </div>
                 </div>
@@ -490,7 +420,7 @@ body {
             <div class="building-table">
                 <div class="table-head">
                     <span>EDIFICIO</span>
-                    <span>HORARIO DE ATENCIÓN</span>
+                    <span>HORARIO ATENCIÓN</span>
                 </div>
 
                 <div class="scroll-container">
@@ -510,9 +440,9 @@ body {
 
         <div class="overlay-content">
             <div class="stat-card">
-                <span class="title">TOTAL EDIFICIOS</span>
+                <span class="title">TOTAL EDIFICIOS ACTIVOS</span>
                 <span class="value" id="totalBuildings">0</span>
-                <span class="sub">EDIFICIOS REGISTRADOS</span>
+                <span class="sub">REGISTRADOS REALES</span>
             </div>
 
             <div class="stat-card">
@@ -521,7 +451,7 @@ body {
                     <svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/></svg>
                 </div>
                 <span class="status-text" id="generalStatus">CARGANDO</span>
-                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONECTANDO A SHEETS</span>
+                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONECTADO A GOOGLE SHEETS</span>
             </div>
 
             <div></div>
@@ -553,11 +483,14 @@ body {
 <script>
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy9pN3-qWESrzI_-QD1CY50jffXSu2a0CoLnCAG5KdJb2D5deDTRwjhjldJXdavHwQY33oOKoO7Xmb/pub?output=csv";
 
-// MAPEO DE COLUMNAS GOOGLE SHEETS
-const COL_NOMBRE = 1;  // Nombre
-const COL_INICIO = 7;  // Hora Inicio
-const COL_FIN    = 8;  // Hora Fin
-const COL_DIST   = 10; // Distrito
+// MAPEO EXACTO DE COLUMNAS (Índice Base 0)
+const COL_ESTADO = 8;  // Columna I (Estado)
+const COL_NOMBRE = 30; // Columna AE (Nombre de edificio)
+const COL_INICIO = 31; // Columna AF (Hora inicio)
+const COL_FIN    = 32; // Columna AG (Hora Fin)
+const COL_MANANA = 33; // Columna AH (MAÑANA)
+const COL_TARDE  = 34; // Columna AI (TARDE)
+const COL_NOCHE  = 35; // Columna AJ (NOCHE)
 
 let allBuildings = [];
 
@@ -570,39 +503,17 @@ function updateClock() {
     renderCurrentShift();
 }
 
-function horaAMinutos(horaTexto) {
-    if (!horaTexto) return null;
-    const match = String(horaTexto).trim().match(/^(\d{1,2}):(\d{2})/);
-    if (!match) return null;
-    const h = parseInt(match[1], 10);
-    const m = parseInt(match[2], 10);
-    return (h >= 0 && h < 24 && m >= 0 && m < 60) ? (h * 60 + m) : null;
-}
-
-function obtenerGrupoPorHorario(horaInicioStr) {
-    const minInicio = horaAMinutos(horaInicioStr);
-    if (minInicio === null) return "MAÑANA";
-
-    const MIN_MANANA    = 6 * 60 + 45;   // 06:45
-    const MIN_TARDE     = 18 * 60 + 15;  // 18:15
-    const MIN_MADRUGADA = 22 * 60;       // 22:00
-
-    if (minInicio >= MIN_MANANA && minInicio < MIN_TARDE) return "MAÑANA";
-    if (minInicio >= MIN_TARDE && minInicio < MIN_MADRUGADA) return "TARDE";
-    return "MADRUGADA";
-}
-
 function currentShift() {
     const now = new Date();
     const min = now.getHours() * 60 + now.getMinutes();
 
     if (min >= 6 * 60 + 45 && min < 18 * 60 + 15) {
-        return { key: "morning", grupo: "MAÑANA", title: "TURNO MAÑANA 06:45 - 18:15", time: "06:45 - 18:15 HRS", icon: "☀" };
+        return { key: "morning", title: "TURNO MAÑANA 06:45 - 18:15", time: "06:45 - 18:15 HRS", icon: "☀" };
     }
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
-        return { key: "afternoon", grupo: "TARDE", title: "TURNO TARDE 18:15 - 22:00", time: "18:15 - 22:00 HRS", icon: "🌤" };
+        return { key: "afternoon", title: "TURNO TARDE 18:15 - 22:00", time: "18:15 - 22:00 HRS", icon: "🌤" };
     }
-    return { key: "night", grupo: "MADRUGADA", title: "MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
+    return { key: "night", title: "MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 function parseCSV(csv) {
@@ -644,29 +555,33 @@ async function loadBuildings() {
         const csv = await response.text();
         const rows = parseCSV(csv);
 
-        const palabrasIgnorar = ["EDIFICIO", "NOMBRE", "INICIO", "FIN", "TURNO", "TOTAL", "DISTRITO", "NOMBRES"];
+        const palabrasIgnorar = ["EDIFICIO", "NOMBRE DE EDIFICIO", "INICIO", "FIN", "TURNO", "TOTAL", "MAÑANA", "TARDE", "NOCHE", "ESTADO"];
 
-        // Procesar y descartar filas de cabecera
         const parsed = rows.slice(1)
             .map(row => ({
-                nombre: (row[COL_NOMBRE] || "").trim(),
-                inicio: (row[COL_INICIO] || "").trim(),
-                fin: (row[COL_FIN] || "").trim(),
-                distrito: (row[COL_DIST] || "").trim()
+                estado:   (row[COL_ESTADO] || "").trim().toUpperCase(),
+                nombre:   (row[COL_NOMBRE] || "").trim(),
+                inicio:   (row[COL_INICIO] || "").trim(),
+                fin:      (row[COL_FIN] || "").trim(),
+                esManana: (row[COL_MANANA] || "").trim() === "1",
+                esTarde:  (row[COL_TARDE] || "").trim() === "1",
+                esNoche:  (row[COL_NOCHE] || "").trim() === "1"
             }))
             .filter(b => {
                 const nom = b.nombre.toUpperCase();
-                return b.nombre !== "" && b.nombre.length > 1 && !palabrasIgnorar.includes(nom);
+                const esNombreValido = b.nombre !== "" && b.nombre.length > 1 && !palabrasIgnorar.includes(nom);
+                const esActivo = b.estado === "ACTIVO";
+                return esNombreValido && esActivo;
             });
 
-        // Eliminar duplicados
+        // Eliminar duplicados exactos
         const mapUnicos = new Map();
         parsed.forEach(b => mapUnicos.set(b.nombre.toUpperCase(), b));
         allBuildings = Array.from(mapUnicos.values());
 
         document.getElementById("totalBuildings").textContent = allBuildings.length;
         document.getElementById("generalStatus").textContent = "OPERATIVO";
-        document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS CONECTADOS";
+        document.getElementById("generalSub").textContent = "GOOGLE SHEETS • FILTRO ACTIVOS APLICADO";
 
         renderCurrentShift();
 
@@ -687,26 +602,27 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    // Derivar edificios según la hora de INICIO
-    const edificiosDelTurno = allBuildings.filter(b => obtenerGrupoPorHorario(b.inicio) === shift.grupo);
+    // Filtrado por columnas AH, AI, AJ (Mañana, Tarde, Noche)
+    const edificiosDelTurno = allBuildings.filter(b => {
+        if (shift.key === "morning") return b.esManana;
+        if (shift.key === "afternoon") return b.esTarde;
+        return b.esNoche;
+    });
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
 
     const track = document.getElementById("buildingTrack");
 
     if (!edificiosDelTurno.length) {
-        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span></div>`;
+        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS ACTIVOS EN ESTE TURNO</span></div>`;
         return;
     }
 
     const htmlRows = edificiosDelTurno.map(b => `
         <div class="building-row">
-            <span>
-                ${escapeHTML(b.nombre)}
-                ${b.distrito ? `<small style="display:block;color:#a1a1aa;font-size:12px;">${escapeHTML(b.distrito)}</small>` : ""}
-            </span>
+            <span>${escapeHTML(b.nombre)}</span>
             <span class="status-pill">
-                <span class="status-dot"></span>${escapeHTML(b.inicio || '00:00')} - ${escapeHTML(b.fin || '00:00')} HRS
+                <span class="status-dot"></span>${escapeHTML(b.inicio || '06:45')} - ${escapeHTML(b.fin || '18:15')} HRS
             </span>
         </div>
     `).join("");
