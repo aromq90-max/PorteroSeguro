@@ -1,976 +1,189 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portero Seguro | Edificios Activos</title>
-
-<style>
-/* =========================================================
-   PORTERO SEGURO - PALETA DE COLORES CORPORATIVA & FUENTES
-   Tipografía: Altair Bold (Títulos) + Montserrat (Cuerpo)
-========================================================= */
-
-@font-face {
-    font-family: 'Altair';
-    src: url('Tipograf%20a/UT%20Tipograf%20a/Altair-Bold%20Trial.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Montserrat';
-    src: url('Tipograf%20a/Montserrat-MediumItalic.ttf') format('truetype');
-    font-weight: 500;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'Montserrat';
-    src: url('Tipograf%20a/Montserrat-BoldItalic.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic;
-}
-
-:root {
-    --bg-dark: #070e17;
-    --card-bg: rgba(14, 25, 41, 0.85);
-    --card-border: rgba(43, 85, 128, 0.4);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portero Seguro - Control de Edificios</title>
     
-    /* Colores del Logo Corporativo */
-    --brand-blue: #0056b3;
-    --brand-cyan: #00a8e8;
-    --brand-teal: #00c4b4;
-    --brand-green: #20d374;
-    
-    --text-main: #f0f6fc;
-    --text-muted: #94a3b8;
-    
-    --font-heading: 'Altair', "Segoe UI", sans-serif;
-    --font-body: 'Montserrat', "Segoe UI", sans-serif;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-    background: var(--bg-dark);
-    font-family: var(--font-body);
-    color: var(--text-main);
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Contenedor principal */
-.dashboard {
-    width: 100vw;
-    height: 100vh;
-    min-width: 1100px;
-    min-height: 620px;
-    padding: 12px;
-    display: grid;
-    grid-template-rows: 14% 53% 28% 5%;
-    gap: 10px;
-    background:
-        radial-gradient(circle at 50% 20%, #0a2239 0%, #040911 80%);
-}
-
-/* =========================================================
-   HEADER NUEVO DISEÑO
-========================================================= */
-
-.header {
-    display: grid;
-    grid-template-columns: 26% 48% 26%;
-    align-items: center;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(6,18,32,0.9), rgba(12,32,54,0.9));
-    padding: 8px 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    backdrop-filter: blur(8px);
-}
-
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.logo-container {
-    width: 65px;
-    height: 65px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Recreación del isotipo corporativo en SVG/CSS */
-.logo-svg {
-    width: 100%;
-    height: 100%;
-}
-
-.brand {
-    font-family: var(--font-heading);
-    font-size: clamp(20px, 2vw, 32px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0.5px;
-}
-
-.brand span {
-    background: linear-gradient(90deg, var(--brand-cyan), var(--brand-teal));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.tagline {
-    font-size: clamp(9px, .75vw, 13px);
-    color: var(--text-muted);
-    margin-top: 5px;
-    letter-spacing: 0.5px;
-}
-
-.title {
-    text-align: center;
-    border-left: 1px solid rgba(255,255,255,0.08);
-    border-right: 1px solid rgba(255,255,255,0.08);
-    padding: 0 10px;
-}
-
-.title h1 {
-    margin: 0;
-    font-family: var(--font-heading);
-    font-size: clamp(24px, 2.6vw, 48px);
-    letter-spacing: 1.5px;
-    background: linear-gradient(90deg, #ffffff, var(--brand-cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.title p {
-    margin: 2px 0 0;
-    color: var(--brand-teal);
-    font-size: clamp(10px, 1vw, 18px);
-    letter-spacing: 2px;
-    font-weight: bold;
-}
-
-.clock {
-    text-align: right;
-}
-
-.time {
-    font-family: var(--font-heading);
-    font-size: clamp(22px, 2.5vw, 44px);
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 0 12px rgba(0, 168, 232, 0.4);
-}
-
-.date {
-    color: var(--text-muted);
-    font-size: clamp(9px, .85vw, 15px);
-}
-
-/* =========================================================
-   TURNOS (TARJETAS MODERNIZADAS)
-========================================================= */
-
-.shifts {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    min-height: 0;
-}
-
-.shift {
-    min-width: 0;
-    display: grid;
-    grid-template-rows: 22% 78%;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: var(--card-bg);
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-}
-
-.shift-header {
-    display: grid;
-    grid-template-columns: 55px 1fr 80px;
-    align-items: center;
-    padding: 6px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.shift-icon {
-    font-size: 32px;
-    text-align: center;
-}
-
-.shift-name {
-    font-family: var(--font-heading);
-    font-size: clamp(16px, 1.4vw, 26px);
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.shift-hours {
-    margin-top: 1px;
-    font-size: clamp(9px, .8vw, 14px);
-    opacity: 0.9;
-}
-
-.shift-count {
-    text-align: center;
-    font-family: var(--font-heading);
-    font-size: clamp(24px, 2.3vw, 42px);
-    font-weight: 800;
-    line-height: 1;
-}
-
-.shift-count small {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 1px;
-    font-family: var(--font-body);
-    font-weight: normal;
-}
-
-/* Estilos de gradientes corporativos por turno */
-.morning .shift-header {
-    background: linear-gradient(90deg, #0056b3, #00a8e8);
-}
-.morning .status, .morning .more {
-    color: var(--brand-teal);
-}
-
-.afternoon .shift-header {
-    background: linear-gradient(90deg, #008080, #00c4b4);
-}
-.afternoon .status, .afternoon .more {
-    color: var(--brand-green);
-}
-
-.night .shift-header {
-    background: linear-gradient(90deg, #0d2c54, #0056b3);
-}
-.night .status, .night .more {
-    color: var(--brand-cyan);
-}
-
-/* Lista de Edificios */
-.building-list {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    min-height: 0;
-    background: rgba(4, 11, 20, 0.4);
-}
-
-.list-head,
-.building {
-    display: grid;
-    grid-template-columns: 1.6fr 0.9fr 0.5fr;
-    align-items: center;
-}
-
-.list-head {
-    min-height: 28px;
-    color: var(--brand-cyan);
-    font-size: clamp(9px, .7vw, 13px);
-    font-weight: bold;
-    padding: 0 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.buildings {
-    overflow: hidden;
-}
-
-.building {
-    min-height: 0;
-    height: calc(100% / 8);
-    padding: 0 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    /* TAMAÑO DE LETRA AUMENTADO PARA LOS EDIFICIOS */
-    font-size: clamp(13px, 1.05vw, 21px);
-    transition: background 0.2s;
-}
-
-.building:nth-child(even) {
-    background: rgba(255, 255, 255, 0.015);
-}
-
-.building-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.location {
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.9em;
-}
-
-.status {
-    text-align: right;
-    font-weight: 700;
-    white-space: nowrap;
-    font-size: 0.8em;
-}
-
-.status::before {
-    content: "●";
-    margin-right: 4px;
-    font-size: 8px;
-}
-
-.more {
-    text-align: center;
-    height: 26px;
-    line-height: 26px;
-    font-size: clamp(10px, .8vw, 14px);
-    font-weight: 700;
-    background: rgba(0,0,0,0.2);
-    letter-spacing: 0.5px;
-}
-
-/* =========================================================
-   PARTE INFERIOR
-========================================================= */
-
-.bottom {
-    display: grid;
-    grid-template-columns: 18% 20% 32% 30%;
-    gap: 12px;
-    min-height: 0;
-}
-
-/* Tarjetas */
-.card {
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: var(--card-bg);
-    padding: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    backdrop-filter: blur(6px);
-}
-
-.card-title {
-    text-align: center;
-    font-size: clamp(10px, .85vw, 15px);
-    letter-spacing: 0.5px;
-    color: var(--brand-cyan);
-    font-weight: bold;
-}
-
-.total-number {
-    text-align: center;
-    font-family: var(--font-heading);
-    font-size: clamp(38px, 3.8vw, 68px);
-    font-weight: 800;
-    line-height: 1;
-    margin-top: 4px;
-    background: linear-gradient(180deg, #ffffff, var(--brand-cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.card-sub {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: clamp(8px, .65vw, 12px);
-    margin-top: 4px;
-}
-
-/* Estado General */
-.general-status {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.check {
-    width: 48px;
-    height: 48px;
-    border: 3px solid var(--brand-green);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--brand-green);
-    font-size: 26px;
-    margin: 4px 0;
-    box-shadow: 0 0 12px rgba(32, 211, 116, 0.3);
-}
-
-.operativo {
-    color: #ffffff;
-    font-weight: 700;
-    font-size: clamp(12px, 1.1vw, 20px);
-    text-align: center;
-}
-
-.availability {
-    margin-top: 4px;
-    font-size: clamp(9px, .7vw, 13px);
-    color: var(--brand-green);
-    font-weight: bold;
-}
-
-/* Críticos / fidelización */
-.critical-title {
-    font-size: clamp(11px, .9vw, 16px);
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--brand-teal);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding-bottom: 4px;
-}
-
-.critical-list {
-    height: calc(100% - 28px);
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-}
-
-.critical-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    font-size: clamp(11px, .9vw, 16px);
-    font-weight: 600;
-}
-
-.critical-item:last-child {
-    border-bottom: 0;
-}
-
-.star {
-    color: var(--brand-cyan);
-    font-size: 16px;
-}
-
-/* Imagen Inferior */
-.hero-image {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background: linear-gradient(135deg, #092032, #050c14);
-}
-
-.hero-image img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    object-position: center;
-}
-
-.image-placeholder {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-size: clamp(11px, .9vw, 16px);
-    letter-spacing: 1px;
-    text-align: center;
-    z-index: 0;
-    padding: 10px;
-}
-
-.hero-image img {
-    position: relative;
-    z-index: 1;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    border-top: 1px solid var(--card-border);
-    color: var(--text-muted);
-    font-size: clamp(8px, .7vw, 13px);
-    background: rgba(4, 9, 17, 0.8);
-    border-radius: 6px;
-}
-
-.footer strong {
-    color: var(--brand-cyan);
-}
-
-/* =========================================================
-   AJUSTES RESPONSIVOS
-========================================================= */
-
-@media (max-height: 750px) {
-    .dashboard {
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .shift-header {
-        grid-template-columns: 40px 1fr 65px;
-    }
-
-    .shift-icon {
-        font-size: 24px;
-    }
-
-    .card {
-        padding: 8px;
-    }
-
-    .check {
-        width: 36px;
-        height: 36px;
-        font-size: 20px;
-    }
-}
-</style>
+    <!-- Tipografía Aller -->
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/aller">
+
+    <style>
+        :root {
+            --color-turquesa: #00A3E0;
+            --color-gris-oscuro: #2D3748;
+            --color-gris-claro: #F7FAFC;
+            --color-rojo-error: #E53E3E;
+        }
+
+        body {
+            font-family: 'Aller', sans-serif;
+            background-color: var(--color-gris-claro);
+            color: var(--color-gris-oscuro);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-bottom: 4px solid var(--color-turquesa);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--color-gris-oscuro);
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        #generalSub {
+            color: var(--color-turquesa);
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilos del contenedor de datos */
+        #shiftContainer {
+            margin-top: 20px;
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+
+        .building-card {
+            background: #ffffff;
+            border-left: 5px solid var(--color-turquesa);
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .building-card h3 {
+            margin: 0 0 8px 0;
+            color: var(--color-gris-oscuro);
+        }
+
+        .building-card p {
+            margin: 4px 0;
+            font-size: 0.9rem;
+            color: #4A5568;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="dashboard">
-
-    <!-- =====================================================
-         HEADER CON LOGO VECTORIAL CORPORATIVO
-    ====================================================== -->
-    <header class="header">
-
-        <div class="logo-area">
-            <div class="logo-container">
-                <!-- Reconstrucción del Isotipo "Escudo P" -->
-                <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 20 C20 20, 50 10, 80 20 C80 50, 75 80, 50 95 C25 80, 20 50, 20 20 Z" fill="#0056b3" opacity="0.3"/>
-                    <path d="M25 25 L55 25 C70 25, 70 50, 55 50 L40 50 L40 80 L25 80 Z" fill="url(#blue-grad)" />
-                    <path d="M40 35 L52 35 C60 35, 60 42, 52 42 L40 42 Z" fill="#ffffff" />
-                    <path d="M60 40 C75 45, 80 65, 65 80 C55 90, 45 85, 45 85" stroke="url(#cyan-grad)" stroke-width="8" stroke-linecap="round" fill="none"/>
-                    <circle cx="68" cy="38" r="5" fill="#20d374" />
-                    <defs>
-                        <linearGradient id="blue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#0056b3" />
-                            <stop offset="100%" stop-color="#00a8e8" />
-                        </linearGradient>
-                        <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#00a8e8" />
-                            <stop offset="100%" stop-color="#00c4b4" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-
-            <div>
-                <div class="brand">
-                    PORTERO <span>SEGURO</span>
-                </div>
-                <div class="tagline">
-                    Tu tranquilidad, nuestra prioridad
-                </div>
-            </div>
-        </div>
-
-        <div class="title">
-            <h1>EDIFICIOS ACTIVOS</h1>
-            <p>EN TODOS NUESTROS TURNOS</p>
-        </div>
-
-        <div class="clock">
-            <div class="time" id="clock">00:00:00</div>
-            <div class="date" id="date">CARGANDO...</div>
-        </div>
-
+    <header>
+        <h1>PORTERO SEGURO</h1>
+        <div id="generalSub">CARGANDO DATOS...</div>
     </header>
 
-
-    <!-- =====================================================
-         TRES TURNOS
-    ====================================================== -->
-    <section class="shifts">
-
-        <!-- MAÑANA -->
-        <article class="shift morning">
-
-            <div class="shift-header">
-                <div class="shift-icon">☀</div>
-
-                <div>
-                    <div class="shift-name">TURNO MAÑANA</div>
-                    <div class="shift-hours">06:00 - 14:00</div>
-                </div>
-
-                <div class="shift-count">
-                    24
-                    <small>EDIFICIOS</small>
-                </div>
-            </div>
-
-            <div class="building-list">
-
-                <div class="list-head">
-                    <div>EDIFICIO</div>
-                    <div>UBICACIÓN</div>
-                    <div>ESTADO</div>
-                </div>
-
-                <div class="buildings">
-
-                    <div class="building">
-                        <div class="building-name">TORRE ALAMEDA</div>
-                        <div class="location">San Isidro</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">EDIFICIO CENTRAL 245</div>
-                        <div class="location">Miraflores</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">VISTA VERDE</div>
-                        <div class="location">Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">TORRES DEL SOL</div>
-                        <div class="location">La Molina</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">PLATINUM PLAZA</div>
-                        <div class="location">San Borja</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">BOSQUES DE MONTERRICO</div>
-                        <div class="location">Santiago de Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">MAGNOLIAS RESIDENCIAL</div>
-                        <div class="location">Surquillo</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">TORRE PRINCIPAL</div>
-                        <div class="location">Jesús María</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                </div>
-
-                <div class="more">Y 16 EDIFICIOS MÁS...</div>
-
-            </div>
-        </article>
-
-
-        <!-- TARDE -->
-        <article class="shift afternoon">
-
-            <div class="shift-header">
-                <div class="shift-icon">☁</div>
-
-                <div>
-                    <div class="shift-name">TURNO TARDE</div>
-                    <div class="shift-hours">14:00 - 22:00</div>
-                </div>
-
-                <div class="shift-count">
-                    28
-                    <small>EDIFICIOS</small>
-                </div>
-            </div>
-
-            <div class="building-list">
-
-                <div class="list-head">
-                    <div>EDIFICIO</div>
-                    <div>UBICACIÓN</div>
-                    <div>ESTADO</div>
-                </div>
-
-                <div class="buildings">
-
-                    <div class="building">
-                        <div class="building-name">PARQUE CENTRAL</div>
-                        <div class="location">San Isidro</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">GARDEN 360</div>
-                        <div class="location">Miraflores</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">HORIZONTES</div>
-                        <div class="location">Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">EL ENCANTO</div>
-                        <div class="location">La Molina</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">LUXURY TOWER</div>
-                        <div class="location">San Borja</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">PORTAL DE LA VEGA</div>
-                        <div class="location">Santiago de Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">SOUL RESIDENCES</div>
-                        <div class="location">Surquillo</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">METRO TOWER</div>
-                        <div class="location">Jesús María</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                </div>
-
-                <div class="more">Y 20 EDIFICIOS MÁS...</div>
-
-            </div>
-        </article>
-
-
-        <!-- NOCHE -->
-        <article class="shift night">
-
-            <div class="shift-header">
-                <div class="shift-icon">☾</div>
-
-                <div>
-                    <div class="shift-name">TURNO NOCHE</div>
-                    <div class="shift-hours">22:00 - 06:00</div>
-                </div>
-
-                <div class="shift-count">
-                    22
-                    <small>EDIFICIOS</small>
-                </div>
-            </div>
-
-            <div class="building-list">
-
-                <div class="list-head">
-                    <div>EDIFICIO</div>
-                    <div>UBICACIÓN</div>
-                    <div>ESTADO</div>
-                </div>
-
-                <div class="buildings">
-
-                    <div class="building">
-                        <div class="building-name">TORRE SKY</div>
-                        <div class="location">San Isidro</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">RESIDENCIAL LARCO</div>
-                        <div class="location">Miraflores</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">MONTECARLO</div>
-                        <div class="location">Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">PRIVÉ LA MOLINA</div>
-                        <div class="location">La Molina</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">ALTOS DE SAN BORJA</div>
-                        <div class="location">San Borja</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">CASUARINAS TOWER</div>
-                        <div class="location">Santiago de Surco</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">URBAN SUITES</div>
-                        <div class="location">Surquillo</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                    <div class="building">
-                        <div class="building-name">PASEO REAL</div>
-                        <div class="location">Jesús María</div>
-                        <div class="status">ACTIVO</div>
-                    </div>
-
-                </div>
-
-                <div class="more">Y 14 EDIFICIOS MÁS...</div>
-
-            </div>
-        </article>
-
-    </section>
-
-
-    <!-- =====================================================
-         PARTE INFERIOR
-    ====================================================== -->
-    <section class="bottom">
-
-        <div class="card">
-            <div class="card-title">TOTAL EDIFICIOS<br>ACTIVOS</div>
-            <div class="total-number">74</div>
-            <div class="card-sub">EN TODOS LOS TURNOS</div>
+    <main>
+        <div id="shiftContainer">
+            <!-- Aquí renderCurrentShift() insertará los edificios -->
         </div>
+    </main>
 
+    <script>
+        // Variables globales necesarias
+        const SHEET_CSV_URL = "TU_URL_DE_GOOGLE_SHEETS_AQUI"; 
+        let buildings = [];
+        let lastSuccessfulData = [];
 
-        <div class="card">
-            <div class="general-status">
-                <div class="card-title">ESTADO GENERAL</div>
-                <div class="check">✓</div>
-                <div class="operativo">TODOS LOS SISTEMAS<br>OPERATIVOS</div>
-                <div class="availability">100% DISPONIBILIDAD</div>
-            </div>
-        </div>
+        // Funciones auxiliares de tu lógica
+        function parseCSV(text) {
+            return text.split('\n').map(row => row.split(','));
+        }
 
+        function isPeruHolidayOrSunday(date) {
+            const day = date.getDay();
+            return day === 0; // Ejemplo básico para domingos
+        }
 
-        <div class="card">
-            <div class="critical-title">
-                ★ EDIFICIOS DE FIDELIZACIÓN / CRÍTICOS
-            </div>
-
-            <div class="critical-list">
-
-                <div class="critical-item">
-                    <span class="star">★</span>
-                    <span>EDIFICIO CORPORATIVO PRIME</span>
+        function renderCurrentShift() {
+            const container = document.getElementById("shiftContainer");
+            if (!container) return;
+            
+            container.innerHTML = buildings.map(b => `
+                <div class="building-card">
+                    <h3>${b.nombre}</h3>
+                    <p><strong>Distrito:</strong> ${b.distrito}</p>
+                    <p><strong>Turno:</strong> ${b.turno}</p>
+                    <p><strong>Horario:</strong> ${b.horario} (${b.horaInicio} - ${b.horaFin})</p>
                 </div>
+            `).join('');
+        }
 
-                <div class="critical-item">
-                    <span class="star">★</span>
-                    <span>TORRE FINANCIERA GLOBAL</span>
-                </div>
+        // Función principal con colores integrados
+        async function loadBuildings() {
+            const subElement = document.getElementById("generalSub");
 
-                <div class="critical-item">
-                    <span class="star">★</span>
-                    <span>SEDE PRINCIPAL PORTERO SEGURO</span>
-                </div>
+            try {
+                const url = SHEET_CSV_URL + "&t=" + Date.now();
+                const response = await fetch(url, { method: "GET", cache: "no-store" });
 
-            </div>
-        </div>
+                if (!response.ok) throw new Error("HTTP " + response.status);
 
+                const csv = await response.text();
+                const rows = parseCSV(csv);
 
-        <div class="hero-image">
+                if (rows.length < 2) throw new Error("Sin filas suficientes.");
 
-            <div class="image-placeholder">
-                AQUÍ COLOCAREMOS LA IMAGEN INFERIOR
-            </div>
+                // Filtramos y limpiamos para evitar filas vacías del final de la hoja
+                buildings = rows.slice(1)
+                    .map(row => {
+                        const nameVal = row[16] || row[1] || "";
+                        return {
+                            nombre: nameVal.trim(),
+                            turno: (row[5] || "").trim(),
+                            horario: (row[6] || "").trim(),
+                            horaInicio: (row[7] || "").trim(),
+                            horaFin: (row[8] || "").trim(),
+                            distrito: (row[10] || "").trim()
+                        };
+                    })
+                    .filter(b => {
+                        // Descarta filas vacías, de encabezados duplicados o notas
+                        const n = b.nombre.toUpperCase();
+                        return n !== "" && n !== "NOMBRE DE EDIFICIO" && n !== "NOMBRE EDIFICIO";
+                    });
 
-            <!-- CUANDO TENGAS LA IMAGEN REEMPLAZA EL SRC:
-            <img src="imagen-inferior.jpg" alt="Portero Seguro"> 
-            -->
+                lastSuccessfulData = buildings;
+                renderCurrentShift();
 
-        </div>
+                const now = new Date();
+                
+                // Color Turquesa oficial de Portero Seguro para carga correcta
+                if (subElement) subElement.style.color = "var(--color-turquesa)";
 
-    </section>
+                if (isPeruHolidayOrSunday(now)) {
+                    if (subElement) subElement.textContent = "DOMINGO / FERIADO PERÚ • COBERTURA TOTAL";
+                } else {
+                    if (subElement) subElement.textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
+                }
 
+            } catch (error) {
+                console.error("Error leyendo Google Sheets:", error);
+                if (lastSuccessfulData.length) {
+                    buildings = lastSuccessfulData;
+                }
+                
+                // Color Rojo en caso de error de conexión
+                if (subElement) {
+                    subElement.style.color = "var(--color-rojo-error)";
+                    subElement.textContent = "ERROR AL CARGAR • VERIFICA SERVIDOR LOCAL";
+                }
+                
+                renderCurrentShift();
+            }
+        }
 
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-    <footer class="footer">
-        <span>📢 Comprometidos con tu seguridad, conectados contigo siempre.</span>
-        <span>GRACIAS POR SER PARTE DE <strong>PORTERO SEGURO</strong> ♥</span>
-    </footer>
-
-</div>
-
-
-<script>
-/* =========================================================
-   RELOJ EN TIEMPO REAL
-========================================================= */
-
-function actualizarReloj() {
-    const ahora = new Date();
-
-    const hora = ahora.toLocaleTimeString("es-PE", {
-        hour12: false
-    });
-
-    const fecha = ahora.toLocaleDateString("es-PE", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        weekday: "long"
-    });
-
-    document.getElementById("clock").textContent = hora;
-    document.getElementById("date").textContent = fecha.toUpperCase();
-}
-
-actualizarReloj();
-setInterval(actualizarReloj, 1000);
-</script>
-
+        // Ejecutar al cargar la página
+        window.addEventListener('DOMContentLoaded', loadBuildings);
+    </script>
 </body>
 </html>
