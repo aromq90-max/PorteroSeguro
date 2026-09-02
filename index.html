@@ -7,24 +7,24 @@
 
 <style>
 /* =========================================================
-   PORTERO SEGURO - ESTILOS BASADOS EN MARCA OFICIAL
+   PORTERO SEGURO - UI BASADA EN DASHBOARD GRANDSTREAM
 ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
 
 :root {
-    --brand-orange: #E33E1A;
-    --brand-orange-glow: rgba(227, 62, 26, 0.35);
-    --brand-gray: #54565A;
-    --brand-dark: #121315;
+    --brand-orange: #EE4023;
+    --brand-orange-light: #FFF0ED;
+    --brand-orange-glow: rgba(238, 64, 35, 0.35);
+    --brand-gray: #4A4A4A;
     
-    --bg-dark: #0f1012;
+    --bg-dark: #121315;
     --panel-bg: rgba(26, 27, 30, 0.92);
-    --panel-border: rgba(84, 86, 90, 0.35);
+    --panel-border: rgba(238, 64, 35, 0.25);
     
     --accent-cyan: #00e5ff;
     --morning-color: #00e676;
-    --afternoon-color: var(--brand-orange);
+    --afternoon-color: #EE4023;
     --night-color: #29b6f6;
 }
 
@@ -66,10 +66,10 @@ body {
     align-items: center;
     background: var(--panel-bg);
     backdrop-filter: blur(16px);
-    border: 1px solid var(--panel-border);
+    border: 2px solid var(--brand-orange);
     border-radius: 12px;
     padding: 0 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(238, 64, 35, 0.15);
 }
 
 .brand-wrapper {
@@ -81,7 +81,6 @@ body {
 .brand-logo {
     width: 46px;
     height: 46px;
-    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,18 +93,15 @@ body {
 }
 
 .brand-text h2 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.5px;
     line-height: 1;
-    color: var(--brand-gray);
+    color: #ffffff;
 }
 
 .brand-text h2 span {
     color: var(--brand-orange);
-    display: block;
-    font-weight: 900;
 }
 
 .brand-text p {
@@ -114,7 +110,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 1.5px;
     font-weight: 700;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .header-title {
@@ -122,7 +118,6 @@ body {
 }
 
 .header-title h1 {
-    font-family: 'Montserrat', sans-serif;
     font-size: 22px;
     font-weight: 900;
     letter-spacing: 2px;
@@ -142,7 +137,6 @@ body {
 }
 
 .time-display {
-    font-family: 'Montserrat', sans-serif;
     font-size: 26px;
     font-weight: 800;
     color: var(--accent-cyan);
@@ -184,7 +178,7 @@ body {
 }
 
 .morning .shift-header { background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), transparent); }
-.afternoon .shift-header { background: linear-gradient(90deg, rgba(227, 62, 26, 0.25), transparent); }
+.afternoon .shift-header { background: linear-gradient(90deg, rgba(238, 64, 35, 0.25), transparent); }
 .night .shift-header { background: linear-gradient(90deg, rgba(41, 182, 246, 0.15), transparent); }
 
 .shift-info {
@@ -198,27 +192,26 @@ body {
 }
 
 .shift-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 800;
+    color: #ffffff;
 }
 
 .shift-time {
-    font-size: 12px;
-    color: #a1a1aa;
-    font-weight: 600;
+    font-size: 13px;
+    color: var(--brand-orange);
+    font-weight: 700;
 }
 
 .badge-count {
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--panel-border);
-    padding: 4px 14px;
-    border-radius: 8px;
+    border: 1px solid var(--brand-orange);
+    padding: 4px 16px;
+    border-radius: 20px;
     text-align: right;
 }
 
 .badge-count .num {
-    font-family: 'Montserrat', sans-serif;
     font-size: 22px;
     font-weight: 900;
 }
@@ -249,7 +242,7 @@ body {
     color: var(--brand-orange);
     font-weight: 800;
     letter-spacing: 1px;
-    background: rgba(227, 62, 26, 0.08);
+    background: rgba(238, 64, 35, 0.08);
     border-bottom: 1px solid var(--panel-border);
 }
 
@@ -280,7 +273,7 @@ body {
     align-items: center;
     padding: 14px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.3px;
 }
@@ -289,8 +282,11 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .status-dot {
@@ -359,7 +355,6 @@ body {
 }
 
 .stat-card .value {
-    font-family: 'Montserrat', sans-serif;
     font-size: 48px;
     font-weight: 900;
     color: var(--brand-orange);
@@ -393,7 +388,6 @@ body {
 }
 
 .status-text {
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
     font-weight: 800;
     color: var(--morning-color);
@@ -418,7 +412,6 @@ body {
     align-items: center;
     gap: 8px;
     color: var(--brand-orange);
-    font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -485,14 +478,10 @@ body {
     <header class="header">
         <div class="brand-wrapper">
             <div class="brand-logo">
-                <svg viewBox="0 0 100 100">
-                    <path d="M50 5 C25 5 10 20 10 45 C10 75 50 95 50 95 C50 95 90 75 90 45 C90 20 75 5 50 5 Z" fill="none" stroke="#E33E1A" stroke-width="8" stroke-linejoin="round"/>
-                    <path d="M25 45 C25 45 35 30 50 30 C65 30 75 45 75 45 C75 45 65 60 50 60 C35 60 25 45 25 45 Z" fill="none" stroke="#E33E1A" stroke-width="7"/>
-                    <circle cx="50" cy="45" r="7" fill="#E33E1A"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7A3,3 0 0,1 15,10C15,11.26 14.22,12.34 13.11,12.77C13.67,13.71 14.5,14.73 16,15.5V17C14.16,17 12.8,15.84 12,14.96C11.2,15.84 9.84,17 8,17V15.5C9.5,14.73 10.33,13.71 10.89,12.77C9.78,12.34 9,11.26 9,10A3,3 0 0,1 12,7Z"/></svg>
             </div>
             <div class="brand-text">
-                <h2>Portero<span>SEGURO</span></h2>
+                <h2>Portero <span>SEGURO</span></h2>
                 <p>Security Command Center</p>
             </div>
         </div>
@@ -515,7 +504,7 @@ body {
                     <span class="shift-icon" id="shiftIcon">☀</span>
                     <div>
                         <div class="shift-title" id="shiftTitle">TURNO MAÑANA</div>
-                        <div class="shift-time" id="shiftTime">06:45 - 18:14:59 HRS</div>
+                        <div class="shift-time" id="shiftTime">06:45 - 18:15 HRS</div>
                     </div>
                 </div>
 
@@ -621,13 +610,16 @@ function currentShift() {
     const now = new Date();
     const minutes = now.getHours() * 60 + now.getMinutes();
 
+    // 06:45 a 18:15 (405 min a 1095 min)
     if (minutes >= 6 * 60 + 45 && minutes < 18 * 60 + 15) {
-        return { key: "morning", title: "TURNO MAÑANA", time: "06:45 - 18:14:59 HRS", icon: "☀" };
+        return { key: "morning", title: "TURNO MAÑANA", time: "06:45 - 18:15 HRS", icon: "☀" };
     }
+    // 18:15 a 22:00 (1095 min a 1320 min)
     if (minutes >= 18 * 60 + 15 && minutes < 22 * 60) {
-        return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 21:59:59 HRS", icon: "🌤" };
+        return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 22:00 HRS", icon: "🌤" };
     }
-    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:44:59 HRS", icon: "🌙" };
+    // 22:00 a 06:45
+    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 function isPeruHolidayOrSunday(date) {
@@ -727,6 +719,9 @@ async function loadBuildings() {
 
         if (rows.length < 2) throw new Error("Sin filas suficientes.");
 
+        // Palabras de cabecera a descartar automáticamente para evitar contar 54 en vez de 53
+        const invalidNames = ["EDIFICIO", "NOMBRE", "TURNO", "HORARIO", "DISTRITO", "EDIFICIOS", "NOMBRES"];
+
         buildings = rows.slice(1)
             .map(row => {
                 const nameVal = row[16] || row[1] || "";
@@ -739,9 +734,14 @@ async function loadBuildings() {
                     distrito: row[10] || ""
                 };
             })
-            .filter(b => b.nombre !== "" && b.nombre.length > 1);
+            .filter(b => {
+                const upper = b.nombre.toUpperCase();
+                return b.nombre !== "" && 
+                       b.nombre.length > 1 && 
+                       !invalidNames.includes(upper);
+            });
 
-        // Eliminación de duplicados exactos por nombre de edificio
+        // Filtrar duplicados
         const uniqueMap = new Map();
         buildings.forEach(b => uniqueMap.set(b.nombre.toUpperCase(), b));
         buildings = Array.from(uniqueMap.values());
@@ -751,7 +751,7 @@ async function loadBuildings() {
 
         const now = new Date();
         if (isPeruHolidayOrSunday(now)) {
-            document.getElementById("generalSub").textContent = "DOMINGO / FERIADO PERÚ • COBERURA TOTAL (100%)";
+            document.getElementById("generalSub").textContent = "DOMINGO / FERIADO PERÚ • COBERTURA TOTAL (100%)";
         } else {
             document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
         }
