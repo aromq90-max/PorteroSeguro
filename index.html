@@ -13,21 +13,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap');
 
 :root {
-    /* Paleta Principal de Marca */
     --brand-orange: #E44010;
     --brand-orange-glow: rgba(228, 64, 16, 0.4);
     --brand-gray: #5D5D5D;
     
-    /* Escala de grises oscura basada en la marca */
     --bg-dark: #121214;
     --panel-bg: rgba(28, 28, 30, 0.85);
     --panel-border: rgba(93, 93, 93, 0.3);
     
-    /* Acentos */
     --accent-cyan: #00f2fe;
     --accent-gold: #ffb703;
     
-    /* Turnos */
     --morning-color: #00e676;
     --afternoon-color: var(--brand-orange);
     --night-color: #29b6f6;
@@ -55,7 +51,6 @@ body {
     background: radial-gradient(circle at 50% 30%, #222328 0%, var(--bg-dark) 90%);
 }
 
-/* Dashboard Layout */
 .dashboard {
     width: 100vw;
     height: 100vh;
@@ -65,10 +60,7 @@ body {
     gap: 10px;
 }
 
-/* =========================================================
-   HEADER ADVANCED
-========================================================= */
-
+/* HEADER */
 .header {
     display: grid;
     grid-template-columns: 300px 1fr 300px;
@@ -165,10 +157,7 @@ body {
     font-weight: 600;
 }
 
-/* =========================================================
-   CARDS DE TURNOS
-========================================================= */
-
+/* TURNOS & TABLA */
 .shifts-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -246,7 +235,6 @@ body {
     font-weight: 700;
 }
 
-/* Lista de Edificios */
 .building-table {
     display: flex;
     flex-direction: column;
@@ -257,8 +245,8 @@ body {
 .table-head {
     display: flex;
     justify-content: space-between;
-    padding: 10px 22px;
-    font-size: 14px;
+    padding: 12px 24px;
+    font-size: 16px;
     color: var(--brand-orange);
     font-weight: 800;
     letter-spacing: 1px;
@@ -275,8 +263,8 @@ body {
 .scroll-track {
     display: flex;
     flex-direction: column;
-    /* VELOCIDAD MUY LENTA: 60 SEGUNDOS */
-    animation: scrollUp 60s linear infinite;
+    /* VELOCIDAD DE 200 SEGUNDOS */
+    animation: scrollUp 200s linear infinite;
 }
 
 .scroll-track:hover {
@@ -292,10 +280,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 22px;
+    padding: 16px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    /* FUENTE MÁS GRANDE */
-    font-size: 18px;
+    /* FUENTE A 30PX */
+    font-size: 30px;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
@@ -303,14 +291,14 @@ body {
 .status-pill {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 10px;
+    font-size: 18px;
     font-weight: 800;
 }
 
 .status-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
 }
 
@@ -323,10 +311,7 @@ body {
 .night .status-pill { color: var(--night-color); }
 .night .status-dot { background: var(--night-color); box-shadow: 0 0 8px var(--night-color); }
 
-/* =========================================================
-   PARTE INFERIOR
-========================================================= */
-
+/* SECCIÓN INFERIOR */
 .bottom-section {
     position: relative;
     border-radius: 12px;
@@ -505,7 +490,6 @@ body {
 
 <div class="dashboard">
 
-    <!-- HEADER PRO -->
     <header class="header">
         <div class="brand-wrapper">
             <div class="brand-logo">
@@ -528,9 +512,7 @@ body {
         </div>
     </header>
 
-    <!-- SECCIÓN DE TURNO ACTUAL -->
     <section class="shifts-grid">
-
         <article class="shift-card morning" id="currentShiftCard">
             <div class="shift-header">
                 <div class="shift-info">
@@ -565,10 +547,8 @@ body {
                 </div>
             </div>
         </article>
-
     </section>
 
-    <!-- SECCIÓN INFERIOR PRO -->
     <section class="bottom-section">
         <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80" class="bg-monitoring-room" alt="Control Room">
 
@@ -604,11 +584,9 @@ body {
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <span>📢 OPERACIÓN EN VIVO • RED DE MONITOREO UNIFICADA</span>
         <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong> ♥</span>
@@ -723,30 +701,24 @@ async function loadBuildings() {
 
         const headers = rows[0].map(h => h.toLowerCase().trim());
         
-        // MAPEAR COLUMNA Q (ÍNDICE 16 EN BASE 0) O BÚSQUEDA POR TEXTO
-        let idxNombre = headers.findIndex(h => h.includes("nombre") || h.includes("edificio"));
-        if (idxNombre === -1 || idxNombre === 1) {
-            // Columna Q es la posición 16 (A=0, B=1, ... Q=16)
-            idxNombre = 16; 
-        }
-
-        let idxTurno = headers.findIndex(h => h.includes("turno"));
-        let idxHorario = headers.findIndex(h => h.includes("horario"));
-        let idxHoraInicio = headers.findIndex(h => h.includes("inicio"));
-        let idxHoraFin = headers.findIndex(h => h.includes("fin"));
-        let idxDistrito = headers.findIndex(h => h.includes("distrito"));
-
+        // MAPEADO SEGÚN TU EXCEL REAL:
+        // Columna Q (Índice 16): Nombre Edificio
+        // Columna F (Índice 5): Turno
+        // Columna G (Índice 6): Horario
+        // Columna H (Índice 7): Hora Inicio
+        // Columna I (Índice 8): Hora Fin
+        // Columna K (Índice 10): Distrito
+        
         buildings = rows.slice(1)
             .map(row => {
-                // Intenta obtener el nombre de la columna Q (16) o fallback a la columna encontrada
-                const nameVal = row[idxNombre] || row[16] || row[1] || "";
+                const nameVal = row[16] || row[1] || "";
                 return {
                     nombre: nameVal.trim(),
-                    turno: idxTurno !== -1 ? row[idxTurno] : "",
-                    horario: idxHorario !== -1 ? row[idxHorario] : "",
-                    horaInicio: idxHoraInicio !== -1 ? row[idxHoraInicio] : "",
-                    horaFin: idxHoraFin !== -1 ? row[idxHoraFin] : "",
-                    distrito: idxDistrito !== -1 ? row[idxDistrito] : ""
+                    turno: row[5] || "",
+                    horario: row[6] || "",
+                    horaInicio: row[7] || "",
+                    horaFin: row[8] || "",
+                    distrito: row[10] || ""
                 };
             })
             .filter(b => b.nombre !== "");
@@ -804,7 +776,7 @@ function renderCurrentShift() {
         <div class="building-row">
             <span>
                 ${escapeHTML(b.nombre)}
-                ${b.distrito ? `<small style="display:block;color:#a1a1aa;font-size:12px;margin-top:3px;">${escapeHTML(b.distrito)}</small>` : ""}
+                ${b.distrito ? `<small style="display:block;color:#a1a1aa;font-size:16px;margin-top:2px;">${escapeHTML(b.distrito)}</small>` : ""}
             </span>
             <span class="status-pill">
                 <span class="status-dot"></span>ACTIVO
@@ -812,9 +784,9 @@ function renderCurrentShift() {
         </div>
     `).join("");
 
-    const duplicate = activeBuildings.length >= 4 ? rows : "";
-    track.innerHTML = rows + duplicate;
-    track.style.animation = activeBuildings.length >= 4 ? "" : "none";
+    // DUPLICADO EXACTO PARA CREAR EL BUCLE CONTINUO DE 360° SOBERBIO Y FLUIDO
+    track.innerHTML = rows + rows;
+    track.style.animation = "scrollUp 200s linear infinite";
 
     document.getElementById("generalStatus").textContent = activeBuildings.length > 0 ? "OPERATIVO" : "SIN EDIFICIOS";
 }
