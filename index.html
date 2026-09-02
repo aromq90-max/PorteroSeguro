@@ -18,7 +18,7 @@
     --brand-orange-glow: rgba(228, 64, 16, 0.4);
     --brand-gray: #5D5D5D;
     
-    /* Escala de grises oscura basada en la marca (Sin usar negro puro) */
+    /* Escala de grises oscura basada en la marca */
     --bg-dark: #121214;
     --panel-bg: rgba(28, 28, 30, 0.85);
     --panel-border: rgba(93, 93, 93, 0.3);
@@ -257,10 +257,10 @@ body {
 .table-head {
     display: flex;
     justify-content: space-between;
-    padding: 8px 18px;
-    font-size: 12px;
+    padding: 10px 22px;
+    font-size: 14px;
     color: var(--brand-orange);
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 1px;
     background: rgba(228, 64, 16, 0.05);
     border-bottom: 1px solid var(--panel-border);
@@ -275,7 +275,12 @@ body {
 .scroll-track {
     display: flex;
     flex-direction: column;
-    animation: scrollUp 20s linear infinite;
+    /* VELOCIDAD MUY LENTA: 60 SEGUNDOS */
+    animation: scrollUp 60s linear infinite;
+}
+
+.scroll-track:hover {
+    animation-play-state: paused;
 }
 
 @keyframes scrollUp {
@@ -287,24 +292,25 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    font-size: 14px;
-    font-weight: 600;
+    padding: 14px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* FUENTE MÁS GRANDE */
+    font-size: 18px;
+    font-weight: 700;
     letter-spacing: 0.5px;
 }
 
 .status-pill {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    gap: 8px;
+    font-size: 14px;
     font-weight: 800;
 }
 
 .status-dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
 }
 
@@ -453,7 +459,7 @@ body {
 .critical-track {
     display: flex;
     flex-direction: column;
-    animation: scrollCritical 12s linear infinite;
+    animation: scrollCritical 25s linear infinite;
 }
 
 @keyframes scrollCritical {
@@ -611,9 +617,6 @@ body {
 </div>
 
 <script>
-/* =========================================================
-   URL DE TU GOOGLE SHEET PUBLICADO
-========================================================= */
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy9pN3-qWESrzI_-QD1CY50jffXSu2a0CoLnCAG5KdJb2D5deDTRwjhjldJXdavHwQY33oOKoO7Xmb/pub?output=csv";
 
 let buildings = [];
@@ -662,7 +665,6 @@ function isBuildingActiveNow(building) {
     const start = timeToMinutes(building.horaInicio);
     const end = timeToMinutes(building.horaFin);
 
-    // Si no hay horas específicas definidas, lo muestra por defecto
     if (start === null || end === null) return true;
 
     const now = new Date();
@@ -717,13 +719,16 @@ async function loadBuildings() {
         const csv = await response.text();
         const rows = parseCSV(csv);
 
-        if (rows.length < 2) throw new Error("Sin filas suficientes en Google Sheets.");
+        if (rows.length < 2) throw new Error("Sin filas suficientes.");
 
-        // Detección inteligente de columnas por encabezado
         const headers = rows[0].map(h => h.toLowerCase().trim());
         
+        // MAPEAR COLUMNA Q (ÍNDICE 16 EN BASE 0) O BÚSQUEDA POR TEXTO
         let idxNombre = headers.findIndex(h => h.includes("nombre") || h.includes("edificio"));
-        if (idxNombre === -1) idxNombre = 1; // Fallback a columna B si no encuentra encabezado
+        if (idxNombre === -1 || idxNombre === 1) {
+            // Columna Q es la posición 16 (A=0, B=1, ... Q=16)
+            idxNombre = 16; 
+        }
 
         let idxTurno = headers.findIndex(h => h.includes("turno"));
         let idxHorario = headers.findIndex(h => h.includes("horario"));
@@ -732,15 +737,19 @@ async function loadBuildings() {
         let idxDistrito = headers.findIndex(h => h.includes("distrito"));
 
         buildings = rows.slice(1)
-            .filter(row => row[idxNombre] && row[idxNombre].trim() !== "")
-            .map(row => ({
-                nombre: row[idxNombre] || "",
-                turno: idxTurno !== -1 ? row[idxTurno] : "",
-                horario: idxHorario !== -1 ? row[idxHorario] : "",
-                horaInicio: idxHoraInicio !== -1 ? row[idxHoraInicio] : "",
-                horaFin: idxHoraFin !== -1 ? row[idxHoraFin] : "",
-                distrito: idxDistrito !== -1 ? row[idxDistrito] : ""
-            }));
+            .map(row => {
+                // Intenta obtener el nombre de la columna Q (16) o fallback a la columna encontrada
+                const nameVal = row[idxNombre] || row[16] || row[1] || "";
+                return {
+                    nombre: nameVal.trim(),
+                    turno: idxTurno !== -1 ? row[idxTurno] : "",
+                    horario: idxHorario !== -1 ? row[idxHorario] : "",
+                    horaInicio: idxHoraInicio !== -1 ? row[idxHoraInicio] : "",
+                    horaFin: idxHoraFin !== -1 ? row[idxHoraFin] : "",
+                    distrito: idxDistrito !== -1 ? row[idxDistrito] : ""
+                };
+            })
+            .filter(b => b.nombre !== "");
 
         lastSuccessfulData = buildings;
         renderCurrentShift();
@@ -752,7 +761,7 @@ async function loadBuildings() {
         if (lastSuccessfulData.length) {
             buildings = lastSuccessfulData;
         }
-        document.getElementById("generalSub").textContent = "ERROR AL CARGAR • VERIFICA CONEXIÓN O SERVIDOR LOCAL";
+        document.getElementById("generalSub").textContent = "ERROR AL CARGAR • VERIFICA SERVIDOR LOCAL";
         renderCurrentShift();
     }
 }
@@ -795,7 +804,7 @@ function renderCurrentShift() {
         <div class="building-row">
             <span>
                 ${escapeHTML(b.nombre)}
-                ${b.distrito ? `<small style="display:block;color:#71717a;font-size:10px;margin-top:2px;">${escapeHTML(b.distrito)}</small>` : ""}
+                ${b.distrito ? `<small style="display:block;color:#a1a1aa;font-size:12px;margin-top:3px;">${escapeHTML(b.distrito)}</small>` : ""}
             </span>
             <span class="status-pill">
                 <span class="status-dot"></span>ACTIVO
@@ -803,9 +812,9 @@ function renderCurrentShift() {
         </div>
     `).join("");
 
-    const duplicate = activeBuildings.length >= 5 ? rows : "";
+    const duplicate = activeBuildings.length >= 4 ? rows : "";
     track.innerHTML = rows + duplicate;
-    track.style.animation = activeBuildings.length >= 5 ? "" : "none";
+    track.style.animation = activeBuildings.length >= 4 ? "" : "none";
 
     document.getElementById("generalStatus").textContent = activeBuildings.length > 0 ? "OPERATIVO" : "SIN EDIFICIOS";
 }
