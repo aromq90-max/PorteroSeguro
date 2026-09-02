@@ -1,189 +1,838 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portero Seguro - Control de Edificios</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portero Seguro | Consola de Monitoreo</title>
+
+<style>
+/* =========================================================
+   PORTERO SEGURO - ESTILOS BASADOS EN MARCA OFICIAL
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+:root {
+    --brand-orange: #E33E1A;
+    --brand-orange-glow: rgba(227, 62, 26, 0.35);
+    --brand-gray: #54565A;
+    --brand-dark: #121315;
     
-    <!-- Tipografía Aller -->
-    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/aller">
+    --bg-dark: #0f1012;
+    --panel-bg: rgba(26, 27, 30, 0.92);
+    --panel-border: rgba(84, 86, 90, 0.35);
+    
+    --accent-cyan: #00e5ff;
+    --morning-color: #00e676;
+    --afternoon-color: var(--brand-orange);
+    --night-color: #29b6f6;
+}
 
-    <style>
-        :root {
-            --color-turquesa: #00A3E0;
-            --color-gris-oscuro: #2D3748;
-            --color-gris-claro: #F7FAFC;
-            --color-rojo-error: #E53E3E;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        body {
-            font-family: 'Aller', sans-serif;
-            background-color: var(--color-gris-claro);
-            color: var(--color-gris-oscuro);
-            margin: 0;
-            padding: 20px;
-        }
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+}
 
-        header {
-            background-color: #ffffff;
-            border-bottom: 4px solid var(--color-turquesa);
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 30%, #1e2024 0%, var(--bg-dark) 90%);
+}
 
-        h1 {
-            color: var(--color-gris-oscuro);
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
+.dashboard {
+    width: 100vw;
+    height: 100vh;
+    padding: 12px;
+    display: grid;
+    grid-template-rows: 75px 1fr 230px 30px;
+    gap: 10px;
+}
 
-        #generalSub {
-            color: var(--color-turquesa);
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+/* HEADER */
+.header {
+    display: grid;
+    grid-template-columns: 320px 1fr 300px;
+    align-items: center;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 0 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
 
-        /* Estilos del contenedor de datos */
-        #shiftContainer {
-            margin-top: 20px;
-            display: grid;
-            gap: 15px;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        }
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
 
-        .building-card {
-            background: #ffffff;
-            border-left: 5px solid var(--color-turquesa);
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+.brand-logo {
+    width: 46px;
+    height: 46px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .building-card h3 {
-            margin: 0 0 8px 0;
-            color: var(--color-gris-oscuro);
-        }
+.brand-logo svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--brand-orange);
+}
 
-        .building-card p {
-            margin: 4px 0;
-            font-size: 0.9rem;
-            color: #4A5568;
-        }
-    </style>
+.brand-text h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    color: var(--brand-gray);
+}
+
+.brand-text h2 span {
+    color: var(--brand-orange);
+    display: block;
+    font-weight: 900;
+}
+
+.brand-text p {
+    font-size: 10px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.header-title {
+    text-align: center;
+}
+
+.header-title h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.header-title p {
+    font-size: 11px;
+    color: var(--brand-orange);
+    letter-spacing: 3px;
+    font-weight: 700;
+}
+
+.header-clock {
+    text-align: right;
+}
+
+.time-display {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+}
+
+.date-display {
+    font-size: 10px;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* TURNOS Y TABLA */
+.shifts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    min-height: 0;
+}
+
+.shift-card {
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    display: grid;
+    grid-template-rows: 65px 1fr;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.shift-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.morning .shift-header { background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), transparent); }
+.afternoon .shift-header { background: linear-gradient(90deg, rgba(227, 62, 26, 0.25), transparent); }
+.night .shift-header { background: linear-gradient(90deg, rgba(41, 182, 246, 0.15), transparent); }
+
+.shift-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shift-icon {
+    font-size: 26px;
+}
+
+.shift-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.shift-time {
+    font-size: 12px;
+    color: #a1a1aa;
+    font-weight: 600;
+}
+
+.badge-count {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--panel-border);
+    padding: 4px 14px;
+    border-radius: 8px;
+    text-align: right;
+}
+
+.badge-count .num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.morning .badge-count .num { color: var(--morning-color); }
+.afternoon .badge-count .num { color: var(--afternoon-color); }
+.night .badge-count .num { color: var(--night-color); }
+
+.badge-count .lbl {
+    font-size: 9px;
+    color: #a1a1aa;
+    display: block;
+    font-weight: 700;
+}
+
+.building-table {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.table-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: var(--brand-orange);
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: rgba(227, 62, 26, 0.08);
+    border-bottom: 1px solid var(--panel-border);
+}
+
+.scroll-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.scroll-track {
+    display: flex;
+    flex-direction: column;
+    animation: scrollUp 200s linear infinite;
+}
+
+.scroll-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.building-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.morning .status-pill { color: var(--morning-color); }
+.morning .status-dot { background: var(--morning-color); box-shadow: 0 0 8px var(--morning-color); }
+
+.afternoon .status-pill { color: var(--afternoon-color); }
+.afternoon .status-dot { background: var(--afternoon-color); box-shadow: 0 0 8px var(--brand-orange-glow); }
+
+.night .status-pill { color: var(--night-color); }
+.night .status-dot { background: var(--night-color); box-shadow: 0 0 8px var(--night-color); }
+
+/* SECCIÓN INFERIOR */
+.bottom-section {
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid var(--panel-border);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.bg-monitoring-room {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: brightness(0.25) contrast(1.1);
+}
+
+.overlay-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 240px 260px 1fr 340px;
+    gap: 12px;
+    padding: 12px;
+}
+
+.stat-card {
+    background: rgba(18, 19, 21, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.stat-card .title {
+    font-size: 11px;
+    color: #a1a1aa;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.stat-card .value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--brand-orange);
+    line-height: 1;
+    margin: 6px 0;
+}
+
+.stat-card .sub {
+    font-size: 10px;
+    color: #a1a1aa;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.status-badge-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(0, 230, 118, 0.15);
+    border: 2px solid var(--morning-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0;
+}
+
+.status-badge-circle svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--morning-color);
+}
+
+.status-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--morning-color);
+}
+
+.center-spacer {
+    pointer-events: none;
+}
+
+.critical-card {
+    background: rgba(18, 19, 21, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--brand-orange);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.critical-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--brand-orange);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--brand-orange-glow);
+    margin-bottom: 6px;
+}
+
+.critical-scroll {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.critical-track {
+    display: flex;
+    flex-direction: column;
+    animation: scrollCritical 25s linear infinite;
+}
+
+@keyframes scrollCritical {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.critical-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.star-icon {
+    color: var(--brand-orange);
+    font-size: 14px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    font-size: 11px;
+    color: #a1a1aa;
+    font-weight: 600;
+}
+
+.footer strong {
+    color: var(--brand-orange);
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>PORTERO SEGURO</h1>
-        <div id="generalSub">CARGANDO DATOS...</div>
+<div class="dashboard">
+
+    <header class="header">
+        <div class="brand-wrapper">
+            <div class="brand-logo">
+                <svg viewBox="0 0 100 100">
+                    <path d="M50 5 C25 5 10 20 10 45 C10 75 50 95 50 95 C50 95 90 75 90 45 C90 20 75 5 50 5 Z" fill="none" stroke="#E33E1A" stroke-width="8" stroke-linejoin="round"/>
+                    <path d="M25 45 C25 45 35 30 50 30 C65 30 75 45 75 45 C75 45 65 60 50 60 C35 60 25 45 25 45 Z" fill="none" stroke="#E33E1A" stroke-width="7"/>
+                    <circle cx="50" cy="45" r="7" fill="#E33E1A"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h2>Portero<span>SEGURO</span></h2>
+                <p>Security Command Center</p>
+            </div>
+        </div>
+
+        <div class="header-title">
+            <h1>MONITOREO DE EDIFICIOS</h1>
+            <p>SISTEMA CONTROLADOR EN TIEMPO REAL</p>
+        </div>
+
+        <div class="header-clock">
+            <div class="time-display" id="clock">00:00:00</div>
+            <div class="date-display" id="date">CARGANDO...</div>
+        </div>
     </header>
 
-    <main>
-        <div id="shiftContainer">
-            <!-- Aquí renderCurrentShift() insertará los edificios -->
-        </div>
-    </main>
-
-    <script>
-        // Variables globales necesarias
-        const SHEET_CSV_URL = "TU_URL_DE_GOOGLE_SHEETS_AQUI"; 
-        let buildings = [];
-        let lastSuccessfulData = [];
-
-        // Funciones auxiliares de tu lógica
-        function parseCSV(text) {
-            return text.split('\n').map(row => row.split(','));
-        }
-
-        function isPeruHolidayOrSunday(date) {
-            const day = date.getDay();
-            return day === 0; // Ejemplo básico para domingos
-        }
-
-        function renderCurrentShift() {
-            const container = document.getElementById("shiftContainer");
-            if (!container) return;
-            
-            container.innerHTML = buildings.map(b => `
-                <div class="building-card">
-                    <h3>${b.nombre}</h3>
-                    <p><strong>Distrito:</strong> ${b.distrito}</p>
-                    <p><strong>Turno:</strong> ${b.turno}</p>
-                    <p><strong>Horario:</strong> ${b.horario} (${b.horaInicio} - ${b.horaFin})</p>
+    <section class="shifts-grid">
+        <article class="shift-card morning" id="currentShiftCard">
+            <div class="shift-header">
+                <div class="shift-info">
+                    <span class="shift-icon" id="shiftIcon">☀</span>
+                    <div>
+                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA</div>
+                        <div class="shift-time" id="shiftTime">06:45 - 18:14:59 HRS</div>
+                    </div>
                 </div>
-            `).join('');
-        }
 
-        // Función principal con colores integrados
-        async function loadBuildings() {
-            const subElement = document.getElementById("generalSub");
+                <div class="badge-count">
+                    <span class="num" id="shiftCount">0</span>
+                    <span class="lbl">EDIFICIOS</span>
+                </div>
+            </div>
 
-            try {
-                const url = SHEET_CSV_URL + "&t=" + Date.now();
-                const response = await fetch(url, { method: "GET", cache: "no-store" });
+            <div class="building-list building-table">
+                <div class="table-head">
+                    <span>EDIFICIO</span>
+                    <span>ESTADO</span>
+                </div>
 
-                if (!response.ok) throw new Error("HTTP " + response.status);
+                <div class="scroll-container">
+                    <div class="scroll-track" id="buildingTrack">
+                        <div class="building-row">
+                            <span>CARGANDO EDIFICIOS...</span>
+                            <span class="status-pill">
+                                <span class="status-dot"></span>CONECTANDO
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
 
-                const csv = await response.text();
-                const rows = parseCSV(csv);
+    <section class="bottom-section">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80" class="bg-monitoring-room" alt="Control Room">
 
-                if (rows.length < 2) throw new Error("Sin filas suficientes.");
+        <div class="overlay-content">
+            <div class="stat-card">
+                <span class="title">TOTAL EDIFICIOS</span>
+                <span class="value" id="totalBuildings">0</span>
+                <span class="sub">EDIFICIOS REGISTRADOS</span>
+            </div>
 
-                // Filtramos y limpiamos para evitar filas vacías del final de la hoja
-                buildings = rows.slice(1)
-                    .map(row => {
-                        const nameVal = row[16] || row[1] || "";
-                        return {
-                            nombre: nameVal.trim(),
-                            turno: (row[5] || "").trim(),
-                            horario: (row[6] || "").trim(),
-                            horaInicio: (row[7] || "").trim(),
-                            horaFin: (row[8] || "").trim(),
-                            distrito: (row[10] || "").trim()
-                        };
-                    })
-                    .filter(b => {
-                        // Descarta filas vacías, de encabezados duplicados o notas
-                        const n = b.nombre.toUpperCase();
-                        return n !== "" && n !== "NOMBRE DE EDIFICIO" && n !== "NOMBRE EDIFICIO";
-                    });
+            <div class="stat-card">
+                <span class="title">ESTADO GENERAL</span>
+                <div class="status-badge-circle">
+                    <svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/></svg>
+                </div>
+                <span class="status-text" id="generalStatus">CARGANDO</span>
+                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONECTANDO CON GOOGLE SHEETS</span>
+            </div>
 
-                lastSuccessfulData = buildings;
-                renderCurrentShift();
+            <div class="center-spacer"></div>
 
-                const now = new Date();
-                
-                // Color Turquesa oficial de Portero Seguro para carga correcta
-                if (subElement) subElement.style.color = "var(--color-turquesa)";
+            <div class="critical-card">
+                <div class="critical-header">
+                    <span>★ EDIFICIOS CRÍTICOS / VIP</span>
+                </div>
+                <div class="critical-scroll">
+                    <div class="critical-track">
+                        <div class="critical-row"><span class="star-icon">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>SEDE CENTRAL PORTERO SEGURO</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
+                        <div class="critical-row"><span class="star-icon">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                if (isPeruHolidayOrSunday(now)) {
-                    if (subElement) subElement.textContent = "DOMINGO / FERIADO PERÚ • COBERTURA TOTAL";
-                } else {
-                    if (subElement) subElement.textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
-                }
+    <footer class="footer">
+        <span>📢 OPERACIÓN EN VIVO • RED DE MONITOREO UNIFICADA</span>
+        <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong></span>
+    </footer>
 
-            } catch (error) {
-                console.error("Error leyendo Google Sheets:", error);
-                if (lastSuccessfulData.length) {
-                    buildings = lastSuccessfulData;
-                }
-                
-                // Color Rojo en caso de error de conexión
-                if (subElement) {
-                    subElement.style.color = "var(--color-rojo-error)";
-                    subElement.textContent = "ERROR AL CARGAR • VERIFICA SERVIDOR LOCAL";
-                }
-                
-                renderCurrentShift();
+</div>
+
+<script>
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy9pN3-qWESrzI_-QD1CY50jffXSu2a0CoLnCAG5KdJb2D5deDTRwjhjldJXdavHwQY33oOKoO7Xmb/pub?output=csv";
+
+let buildings = [];
+let lastSuccessfulData = [];
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent = now.toLocaleTimeString("es-PE", { hour12: false });
+    document.getElementById("date").textContent = now.toLocaleDateString("es-PE", {
+        weekday: "long", day: "2-digit", month: "long", year: "numeric"
+    }).toUpperCase();
+    renderCurrentShift();
+}
+
+function timeToMinutes(value) {
+    if (value === undefined || value === null) return null;
+    let s = String(value).trim();
+    if (!s) return null;
+    const match = s.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+    if (!match) return null;
+    const h = Number(match[1]);
+    const m = Number(match[2]);
+    if (h > 23 || m > 59) return null;
+    return h * 60 + m;
+}
+
+function currentShift() {
+    const now = new Date();
+    const minutes = now.getHours() * 60 + now.getMinutes();
+
+    if (minutes >= 6 * 60 + 45 && minutes < 18 * 60 + 15) {
+        return { key: "morning", title: "TURNO MAÑANA", time: "06:45 - 18:14:59 HRS", icon: "☀" };
+    }
+    if (minutes >= 18 * 60 + 15 && minutes < 22 * 60) {
+        return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 21:59:59 HRS", icon: "🌤" };
+    }
+    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:44:59 HRS", icon: "🌙" };
+}
+
+function isPeruHolidayOrSunday(date) {
+    if (date.getDay() === 0) return true;
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+
+    const holidays = [
+        "1/1", "1/5", "29/6", "28/7", "29/7", "6/8", 
+        "30/8", "8/10", "1/11", "8/12", "9/12", "25/12"
+    ];
+
+    return holidays.includes(`${day}/${month}`);
+}
+
+function isBuildingActiveNow(building) {
+    const now = new Date();
+
+    if (isPeruHolidayOrSunday(now)) {
+        return true;
+    }
+
+    const shift = currentShift();
+    const turnoExcel = (building.turno || "").trim().toUpperCase();
+
+    if (turnoExcel.includes("24")) {
+        return true;
+    }
+
+    if (shift.key === "morning") {
+        if (turnoExcel.includes("DIA") || turnoExcel.includes("DÍA") || turnoExcel.includes("MAÑANA") || turnoExcel.includes("MANANA")) return true;
+    } 
+    else if (shift.key === "afternoon") {
+        if (turnoExcel.includes("TARDE")) return true;
+    } 
+    else if (shift.key === "night") {
+        if (turnoExcel.includes("NOCHE") || turnoExcel.includes("MADRUGADA")) return true;
+    }
+
+    const start = timeToMinutes(building.horaInicio);
+    const end = timeToMinutes(building.horaFin);
+
+    if (start !== null && end !== null) {
+        const currentMin = now.getHours() * 60 + now.getMinutes();
+        if (start <= end) return currentMin >= start && currentMin <= end;
+        return currentMin >= start || currentMin <= end;
+    }
+
+    return false;
+}
+
+function parseCSV(csv) {
+    const rows = [];
+    let row = [];
+    let value = "";
+    let insideQuotes = false;
+
+    for (let i = 0; i < csv.length; i++) {
+        const char = csv[i];
+        if (char === '"') {
+            if (insideQuotes && csv[i + 1] === '"') {
+                value += '"';
+                i++;
+            } else {
+                insideQuotes = !insideQuotes;
             }
+        } else if (char === "," && !insideQuotes) {
+            row.push(value.trim().replace(/^"|"$/g, ''));
+            value = "";
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+            if (char === "\r" && csv[i + 1] === "\n") i++;
+            row.push(value.trim().replace(/^"|"$/g, ''));
+            value = "";
+            if (row.some(v => v !== "")) rows.push(row);
+            row = [];
+        } else {
+            value += char;
+        }
+    }
+    if (value !== "" || row.length) {
+        row.push(value.trim().replace(/^"|"$/g, ''));
+        if (row.some(v => v !== "")) rows.push(row);
+    }
+    return rows;
+}
+
+async function loadBuildings() {
+    try {
+        const url = SHEET_CSV_URL + "&t=" + Date.now();
+        const response = await fetch(url, { method: "GET", cache: "no-store" });
+
+        if (!response.ok) throw new Error("HTTP " + response.status);
+
+        const csv = await response.text();
+        const rows = parseCSV(csv);
+
+        if (rows.length < 2) throw new Error("Sin filas suficientes.");
+
+        buildings = rows.slice(1)
+            .map(row => {
+                const nameVal = row[16] || row[1] || "";
+                return {
+                    nombre: nameVal.trim(),
+                    turno: row[5] || "",
+                    horario: row[6] || "",
+                    horaInicio: row[7] || "",
+                    horaFin: row[8] || "",
+                    distrito: row[10] || ""
+                };
+            })
+            .filter(b => b.nombre !== "" && b.nombre.length > 1);
+
+        // Eliminación de duplicados exactos por nombre de edificio
+        const uniqueMap = new Map();
+        buildings.forEach(b => uniqueMap.set(b.nombre.toUpperCase(), b));
+        buildings = Array.from(uniqueMap.values());
+
+        lastSuccessfulData = buildings;
+        renderCurrentShift();
+
+        const now = new Date();
+        if (isPeruHolidayOrSunday(now)) {
+            document.getElementById("generalSub").textContent = "DOMINGO / FERIADO PERÚ • COBERURA TOTAL (100%)";
+        } else {
+            document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
         }
 
-        // Ejecutar al cargar la página
-        window.addEventListener('DOMContentLoaded', loadBuildings);
-    </script>
+    } catch (error) {
+        console.error("Error leyendo Google Sheets:", error);
+        if (lastSuccessfulData.length) {
+            buildings = lastSuccessfulData;
+        }
+        document.getElementById("generalSub").textContent = "ERROR AL CARGAR • VERIFICA SERVIDOR LOCAL";
+        renderCurrentShift();
+    }
+}
+
+function renderCurrentShift() {
+    const shift = currentShift();
+    const card = document.getElementById("currentShiftCard");
+    const icon = document.getElementById("shiftIcon");
+    const title = document.getElementById("shiftTitle");
+    const time = document.getElementById("shiftTime");
+    const track = document.getElementById("buildingTrack");
+    const count = document.getElementById("shiftCount");
+
+    card.classList.remove("morning", "afternoon", "night");
+    card.classList.add(shift.key);
+
+    icon.textContent = shift.icon;
+    title.textContent = shift.title;
+    time.textContent = shift.time;
+
+    const activeBuildings = buildings.filter(isBuildingActiveNow);
+
+    activeBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
+
+    count.textContent = activeBuildings.length;
+    document.getElementById("totalBuildings").textContent = buildings.length;
+
+    if (!activeBuildings.length) {
+        track.innerHTML = `
+            <div class="building-row">
+                <span>NO HAY EDIFICIOS REGISTRADOS</span>
+                <span class="status-pill">
+                    <span class="status-dot"></span>SIN REGISTROS
+                </span>
+            </div>`;
+        return;
+    }
+
+    const rows = activeBuildings.map(b => `
+        <div class="building-row">
+            <span>
+                ${escapeHTML(b.nombre)}
+                ${b.distrito ? `<small style="display:block;color:#a1a1aa;font-size:14px;margin-top:2px;">${escapeHTML(b.distrito)}</small>` : ""}
+            </span>
+            <span class="status-pill">
+                <span class="status-dot"></span>ACTIVO
+            </span>
+        </div>
+    `).join("");
+
+    track.innerHTML = rows + rows;
+    track.style.animation = "scrollUp 200s linear infinite";
+
+    document.getElementById("generalStatus").textContent = activeBuildings.length > 0 ? "OPERATIVO" : "SIN EDIFICIOS";
+}
+
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+loadBuildings();
+setInterval(loadBuildings, 5 * 60 * 1000);
+setInterval(renderCurrentShift, 60 * 1000);
+</script>
+
 </body>
 </html>
