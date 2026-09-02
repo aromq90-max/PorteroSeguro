@@ -263,7 +263,6 @@ body {
 .scroll-track {
     display: flex;
     flex-direction: column;
-    /* VELOCIDAD DE 200 SEGUNDOS */
     animation: scrollUp 200s linear infinite;
 }
 
@@ -282,7 +281,6 @@ body {
     align-items: center;
     padding: 16px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    /* FUENTE A 30PX */
     font-size: 30px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -634,22 +632,76 @@ function currentShift() {
     return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:44:59 HRS", icon: "🌙" };
 }
 
+/* =========================================================
+   COMPROBACIÓN DE FERIADOS EN PERÚ Y DOMINGOS
+========================================================= */
+function isPeruHolidayOrSunday(date) {
+    // Si es Domingo (0)
+    if (date.getDay() === 0) return true;
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Enero = 1
+
+    // Feriados Oficiales Fijos en Perú (Día/Mes)
+    const holidays = [
+        "1/1",   // Año Nuevo
+        "1/5",   // Día del Trabajo
+        "29/6",  // San Pedro y San Pablo
+        "28/7",  // Fiestas Patrias
+        "29/7",  // Fiestas Patrias
+        "6/8",   // Batalla de Junín
+        "30/8",  // Santa Rosa de Lima
+        "8/10",  // Combate de Angamos
+        "1/11",  // Todos los Santos
+        "8/12",  // Inmaculada Concepción
+        "9/12",  // Batalla de Ayacucho
+        "25/12"  // Navidad
+    ];
+
+    return holidays.includes(`${day}/${month}`);
+}
+
+/* =========================================================
+   FILTRADO DE EDIFICIOS POR TURNO Y DÍA
+========================================================= */
 function isBuildingActiveNow(building) {
-    const turno = (building.turno || "").trim().toUpperCase();
-    const horario = (building.horario || "").trim().toUpperCase();
+    const now = new Date();
 
-    if (turno.includes("24") || horario.includes("24")) return true;
+    // Regla 1: Si es Domingo o Feriado en Perú, atienden TODOS los edificios
+    if (isPeruHolidayOrSunday(now)) {
+        return true;
+    }
 
+    const shift = currentShift();
+    const turnoExcel = (building.turno || "").trim().toUpperCase();
+
+    // Regla 2: Si la columna Turno dice "24 HORAS", opera en todos los turnos
+    if (turnoExcel.includes("24")) {
+        return true;
+    }
+
+    // Regla 3: Mapeo de Turno según columna "Turno" del Excel
+    if (shift.key === "morning") {
+        if (turnoExcel.includes("DIA") || turnoExcel.includes("DÍA") || turnoExcel.includes("MAÑANA") || turnoExcel.includes("MANANA")) return true;
+    } 
+    else if (shift.key === "afternoon") {
+        if (turnoExcel.includes("TARDE")) return true;
+    } 
+    else if (shift.key === "night") {
+        if (turnoExcel.includes("NOCHE") || turnoExcel.includes("MADRUGADA")) return true;
+    }
+
+    // Regla 4: Evaluación complementaria por Horas
     const start = timeToMinutes(building.horaInicio);
     const end = timeToMinutes(building.horaFin);
 
-    if (start === null || end === null) return true;
+    if (start !== null && end !== null) {
+        const currentMin = now.getHours() * 60 + now.getMinutes();
+        if (start <= end) return currentMin >= start && currentMin <= end;
+        return currentMin >= start || currentMin <= end;
+    }
 
-    const now = new Date();
-    const current = now.getHours() * 60 + now.getMinutes();
-
-    if (start <= end) return current >= start && current <= end;
-    return current >= start || current <= end;
+    return false;
 }
 
 function parseCSV(csv) {
@@ -699,11 +751,9 @@ async function loadBuildings() {
 
         if (rows.length < 2) throw new Error("Sin filas suficientes.");
 
-        const headers = rows[0].map(h => h.toLowerCase().trim());
-        
-        // MAPEADO SEGÚN TU EXCEL REAL:
+        // MAPEADO DIRECTO DE TU ESTRUCTURA EXCEL REAL:
         // Columna Q (Índice 16): Nombre Edificio
-        // Columna F (Índice 5): Turno
+        // Columna F (Índice 5): Turno (DIA, TARDE, NOCHE, 24 HORAS, etc.)
         // Columna G (Índice 6): Horario
         // Columna H (Índice 7): Hora Inicio
         // Columna I (Índice 8): Hora Fin
@@ -726,7 +776,12 @@ async function loadBuildings() {
         lastSuccessfulData = buildings;
         renderCurrentShift();
 
-        document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
+        const now = new Date();
+        if (isPeruHolidayOrSunday(now)) {
+            document.getElementById("generalSub").textContent = "DOMINGO / FERIADO PERÚ • COBERURA TOTAL (100%)";
+        } else {
+            document.getElementById("generalSub").textContent = "GOOGLE SHEETS • DATOS ACTUALIZADOS";
+        }
 
     } catch (error) {
         console.error("Error leyendo Google Sheets:", error);
@@ -784,7 +839,6 @@ function renderCurrentShift() {
         </div>
     `).join("");
 
-    // DUPLICADO EXACTO PARA CREAR EL BUCLE CONTINUO DE 360° SOBERBIO Y FLUIDO
     track.innerHTML = rows + rows;
     track.style.animation = "scrollUp 200s linear infinite";
 
