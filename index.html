@@ -317,7 +317,6 @@ html, body {
 
     <header class="header">
         <div class="logo-container">
-            <!-- URL del Logo cargada directamente -->
             <img src="https://raw.githubusercontent.com/aromq90-max/PorteroSeguro/refs/heads/main/2024-LOGO-RGB-01-WEB.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
             <div id="altLogo" style="display:none; font-weight:900; font-size:20px; color:var(--brand-orange)">
                 Portero <span style="color:#222">SEGURO</span>
@@ -359,12 +358,7 @@ html, body {
             </div>
 
             <div class="scroll-container">
-                <div class="scroll-track" id="buildingTrack">
-                    <div class="building-row">
-                        <span>CONECTANDO A BASE DE DATOS...</span>
-                        <div><span class="status-pill"><span class="status-dot"></span>• ACTIVO</span></div>
-                    </div>
-                </div>
+                <div class="scroll-track" id="buildingTrack"></div>
             </div>
         </section>
 
@@ -400,8 +394,8 @@ html, body {
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
 
-// Datos de demostración locales
-const fallbackBuildings = [
+// Carga Inicial Inmediata
+let allBuildings = [
     { nombre: "BOL3 - Edificio Bolognes 3", esManana: true, esTarde: true, esNoche: true },
     { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
     { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true },
@@ -411,7 +405,6 @@ const fallbackBuildings = [
     { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true }
 ];
 
-let allBuildings = [];
 let lastShiftKey = "";
 
 function updateClock() {
@@ -441,35 +434,31 @@ function currentShift() {
     return { key: "night", title: "TURNO MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
+// Carga con tiempo de espera máximo (Timeout 1.5s)
 async function loadBuildings() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now());
-        if (!response.ok) throw new Error("HTTP " + response.status);
+        const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) return;
 
         const data = await response.json();
         
         if (Array.isArray(data) && data.length > 0) {
-            allBuildings = data;
-        } else if (allBuildings.length === 0) {
-            allBuildings = fallbackBuildings;
+            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+            
+            const newDataString = JSON.stringify(data);
+            if (window.lastDataString !== newDataString) {
+                window.lastDataString = newDataString;
+                allBuildings = data;
+                renderCurrentShift();
+            }
         }
-
-        // Ordenamiento alfabético automático (A-Z)
-        allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-
-        const newDataString = JSON.stringify(allBuildings);
-        if (window.lastDataString === newDataString) return;
-        window.lastDataString = newDataString;
-
-        renderCurrentShift();
-
     } catch (e) {
-        console.error("Error al conectar con la API:", e);
-        if (allBuildings.length === 0) {
-            allBuildings = fallbackBuildings;
-            allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-            renderCurrentShift();
-        }
+        // Si hay timeout o error, se mantiene los datos actuales sin trabar la interfaz
     }
 }
 
@@ -517,11 +506,14 @@ function escapeHTML(str) {
     return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
-setInterval(updateClock, 1000);
+// Ejecución Instantánea
 updateClock();
-loadBuildings();
+allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+renderCurrentShift();
 
-setInterval(loadBuildings, 3000);
+setInterval(updateClock, 1000);
+loadBuildings();
+setInterval(loadBuildings, 5000);
 </script>
 
 </body>
