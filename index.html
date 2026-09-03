@@ -155,10 +155,11 @@
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
         }
 
+        /* COLOR DEL TURNO IGUAL A LOS EDIFICIOS */
         .shift-text-title {
             font-size: 32px;
             font-weight: 900;
-            color: #1A1A1A;
+            color: #2C3E50;
             line-height: 1.1;
             letter-spacing: -0.5px;
         }
@@ -223,6 +224,7 @@
             100% { transform: translateY(-50%); }
         }
 
+        /* COLOR DE NOMBRES DE EDIFICIOS */
         .building-row {
             display: grid;
             grid-template-columns: 1fr 180px;
@@ -317,6 +319,7 @@
             flex-direction: column;
         }
 
+        /* COLOR DE NOMBRES DE EDIFICIOS CRÍTICOS IGUAL A #2C3E50 */
         .vip-row {
             display: flex;
             align-items: center;
@@ -325,7 +328,7 @@
             border-bottom: 1px solid #F5F5F5;
             font-size: 13px;
             font-weight: 800;
-            color: #333;
+            color: #2C3E50;
         }
 
         .vip-row .star {
@@ -459,7 +462,7 @@ function currentShift() {
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
         return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 22:00 HRS", icon: "🌤️" };
     }
-    // CAMBIADO A TURNO MADRUGADA
+    // TURNO MADRUGADA
     return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
