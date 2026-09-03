@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portero Seguro | Consola de Monitoreo</title>
+<title>Portero Seguro | Centro de Control & Monitoreo Unificado</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
 
 :root {
     --brand-orange: #EE4023;
-    --brand-orange-glow: rgba(238, 64, 35, 0.35);
-    --bg-dark: #121315;
-    --panel-bg: rgba(26, 27, 30, 0.92);
-    --panel-border: rgba(238, 64, 35, 0.25);
-    --accent-cyan: #00e5ff;
-    --morning-color: #00e676;
-    --afternoon-color: #EE4023;
-    --night-color: #29b6f6;
+    --brand-red: #D32F2F;
+    --bg-light: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --border-color: #EAEAEA;
+    --text-dark: #222222;
+    --text-muted: #888888;
+    --status-bg: #E8F5E9;
+    --status-green: #2E7D32;
+    --glow-green: #00E676;
 }
 
 * {
@@ -30,74 +31,38 @@ html, body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-dark);
+    background-color: var(--bg-light);
     font-family: 'Montserrat', sans-serif;
-    color: #ffffff;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at 50% 30%, #1e2024 0%, var(--bg-dark) 90%);
+    color: var(--text-dark);
 }
 
 .dashboard {
     width: 100vw;
     height: 100vh;
-    padding: 12px;
+    padding: 16px 24px;
     display: grid;
-    grid-template-rows: 75px 1fr 230px 30px;
-    gap: 10px;
+    grid-template-rows: 70px 1fr 30px;
+    gap: 16px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F4F5F7 100%);
 }
 
 /* HEADER */
 .header {
     display: grid;
-    grid-template-columns: 320px 1fr 300px;
+    grid-template-columns: 280px 1fr 280px;
     align-items: center;
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
-    border: 2px solid var(--brand-orange);
-    border-radius: 12px;
-    padding: 0 24px;
-    box-shadow: 0 4px 20px rgba(238, 64, 35, 0.15);
 }
 
-.brand-wrapper {
+.logo-container {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
-.brand-logo {
-    width: 46px;
-    height: 46px;
-}
-
-.brand-logo svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--brand-orange);
-}
-
-.brand-text h2 {
-    font-size: 20px;
-    font-weight: 800;
-    line-height: 1;
-}
-
-.brand-text h2 span {
-    color: var(--brand-orange);
-}
-
-.brand-text p {
-    font-size: 10px;
-    color: #a1a1aa;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
-    margin-top: 3px;
+.logo-img {
+    max-height: 55px;
+    width: auto;
+    object-fit: contain;
 }
 
 .header-title {
@@ -105,17 +70,19 @@ body {
 }
 
 .header-title h1 {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 900;
-    letter-spacing: 2px;
+    color: var(--brand-orange);
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
 .header-title p {
     font-size: 11px;
-    color: var(--brand-orange);
-    letter-spacing: 3px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
     font-weight: 700;
+    margin-top: 2px;
 }
 
 .header-clock {
@@ -124,92 +91,119 @@ body {
 
 .time-display {
     font-size: 26px;
-    font-weight: 800;
-    color: var(--accent-cyan);
+    font-weight: 900;
+    color: var(--brand-orange);
 }
 
 .date-display {
     font-size: 10px;
-    color: #a1a1aa;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-weight: 700;
 }
 
-/* CARD TURNO */
-.shifts-grid {
+/* MAIN CONTENT GRID */
+.main-content {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
     min-height: 0;
 }
 
-.shift-card {
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--panel-border);
+/* PANEL IZQUIERDO */
+.left-panel {
+    background: var(--card-bg);
     border-radius: 12px;
-    display: grid;
-    grid-template-rows: 65px 1fr;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.shift-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.morning .shift-header { background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), transparent); }
-.afternoon .shift-header { background: linear-gradient(90deg, rgba(238, 64, 35, 0.25), transparent); }
-.night .shift-header { background: linear-gradient(90deg, rgba(41, 182, 246, 0.15), transparent); }
-
-.shift-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.shift-icon { font-size: 26px; }
-.shift-title { font-size: 17px; font-weight: 800; }
-.shift-time { font-size: 13px; color: var(--brand-orange); font-weight: 700; }
-
-.badge-count {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--brand-orange);
-    padding: 4px 16px;
-    border-radius: 20px;
-    text-align: right;
-}
-
-.badge-count .num { font-size: 22px; font-weight: 900; }
-.morning .badge-count .num { color: var(--morning-color); }
-.afternoon .badge-count .num { color: var(--afternoon-color); }
-.night .badge-count .num { color: var(--night-color); }
-
-.badge-count .lbl { font-size: 9px; color: #a1a1aa; display: block; font-weight: 700; }
-
-/* TABLA CON SCROLL FLUIDO */
-.building-table {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
-    height: 100%;
     overflow: hidden;
 }
 
-.table-head {
+.panel-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: 12px 24px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: #FAFAFA;
+}
+
+.shift-info-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.weather-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #FFF;
+    box-shadow: 0 4px 12px rgba(238, 64, 35, 0.12);
+    border: 1px solid #FFE0B2;
+}
+
+.shift-icon {
+    font-size: 38px;
+    line-height: 1;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
+}
+
+.shift-text-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: #1A1A1A;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.shift-text-sub {
     font-size: 14px;
     color: var(--brand-orange);
     font-weight: 800;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+}
+
+.counter-badge {
+    border: 2px solid var(--brand-orange);
+    border-radius: 10px;
+    padding: 8px 24px;
+    text-align: center;
+    background: #FFF;
+}
+
+.counter-badge .num {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--brand-orange);
+    line-height: 1;
+}
+
+.counter-badge .lbl {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--text-muted);
     letter-spacing: 1px;
-    background: rgba(238, 64, 35, 0.08);
-    border-bottom: 1px solid var(--panel-border);
+}
+
+/* TABLA Y SCROLL CONTINUO */
+.table-head {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    padding: 14px 24px;
+    font-size: 13px;
+    color: var(--brand-orange);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .scroll-container {
@@ -222,156 +216,138 @@ body {
     display: flex;
     flex-direction: column;
     will-change: transform;
-    animation: scrollContinuous 40s linear infinite;
 }
 
-@keyframes scrollContinuous {
+@keyframes scrollLoop {
     0% { transform: translateY(0); }
     100% { transform: translateY(-50%); }
 }
 
 .building-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 180px;
     align-items: center;
-    padding: 14px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 20px;
-    font-weight: 700;
+    padding: 18px 24px;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 18px;
+    font-weight: 800;
+    color: #2C3E50;
 }
 
+/* ESTADO EN LÍNEA CON LUZ VIBRANTE / PULSANTE */
 .status-pill {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
-    padding: 5px 14px;
-    border-radius: 12px;
-    background: rgba(0, 230, 118, 0.12);
-    color: var(--morning-color);
-    border: 1px solid rgba(0, 230, 118, 0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: var(--status-bg);
+    color: var(--status-green);
+    width: fit-content;
+    border: 1px solid rgba(46, 125, 50, 0.2);
 }
 
 .status-dot {
-    width: 8px;
-    height: 8px;
+    position: relative;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: var(--morning-color);
-    box-shadow: 0 0 8px var(--morning-color);
+    background-color: var(--glow-green);
+    box-shadow: 0 0 8px var(--glow-green);
+    animation: pulseGlow 1.4s infinite ease-in-out;
 }
 
-/* BOTTOM SECTION */
-.bottom-section {
-    position: relative;
+@keyframes pulseGlow {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0.7);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 12px var(--glow-green), 0 0 0 6px rgba(0, 230, 118, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0);
+    }
+}
+
+/* PANEL DERECHO (ESTÁTICO) */
+.right-panel {
+    background: var(--card-bg);
     border-radius: 12px;
-    border: 1px solid var(--panel-border);
-    overflow: hidden;
-}
-
-.bg-monitoring-room {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    filter: brightness(0.25) contrast(1.1);
-}
-
-.overlay-content {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: 240px 260px 1fr 340px;
-    gap: 12px;
-    padding: 12px;
-}
-
-.stat-card {
-    background: rgba(18, 19, 21, 0.9);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.stat-card .title { font-size: 11px; color: #a1a1aa; font-weight: 700; }
-.stat-card .value { font-size: 48px; font-weight: 900; color: var(--brand-orange); line-height: 1; margin: 6px 0; }
-.stat-card .sub { font-size: 10px; color: #a1a1aa; font-weight: 700; }
-
-.status-badge-circle {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(0, 230, 118, 0.15);
-    border: 2px solid var(--morning-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 6px 0;
-}
-
-.status-badge-circle svg { width: 26px; height: 26px; fill: var(--morning-color); }
-.status-text { font-size: 13px; font-weight: 800; color: var(--morning-color); }
-
-.critical-card {
-    background: rgba(18, 19, 21, 0.92);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--brand-orange);
-    border-radius: 10px;
-    padding: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    padding: 20px;
     display: flex;
     flex-direction: column;
 }
 
-.critical-header {
+.vip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+
+.vip-header-title {
+    font-size: 13px;
+    font-weight: 900;
     color: var(--brand-orange);
-    font-size: 12px;
-    font-weight: 800;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--brand-orange-glow);
-    margin-bottom: 6px;
+    letter-spacing: 0.5px;
 }
 
-.critical-scroll { flex: 1; overflow: hidden; position: relative; }
-.critical-track { display: flex; flex-direction: column; animation: scrollCritical 25s linear infinite; }
+.vip-counter {
+    background: rgba(238, 64, 35, 0.1);
+    color: var(--brand-orange);
+    font-weight: 900;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
 
-@keyframes scrollCritical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+.vip-static-container {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
 
-.critical-row {
+.vip-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 12px;
-    font-weight: 700;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #F5F5F5;
+    font-size: 13px;
+    font-weight: 800;
+    color: #333;
 }
 
-.star-icon { color: var(--brand-orange); }
+.vip-row .star {
+    color: var(--brand-orange);
+    font-size: 15px;
+}
 
+/* FOOTER */
 .footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    font-size: 11px;
-    color: #a1a1aa;
-    font-weight: 600;
+    padding: 0 8px;
+    font-size: 10px;
+    color: #A0A0A0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-.footer strong { color: var(--brand-orange); }
+.footer strong {
+    color: var(--brand-orange);
+}
 </style>
 </head>
 
@@ -380,19 +356,16 @@ body {
 <div class="dashboard">
 
     <header class="header">
-        <div class="brand-wrapper">
-            <div class="brand-logo">
-                <svg viewBox="0 0 24 24"><path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7A3,3 0 0,1 15,10C15,11.26 14.22,12.34 13.11,12.77C13.67,13.71 14.5,14.73 16,15.5V17C14.16,17 12.8,15.84 12,14.96C11.2,15.84 9.84,17 8,17V15.5C9.5,14.73 10.33,13.71 10.89,12.77C9.78,12.34 9,11.26 9,10A3,3 0 0,1 12,7Z"/></svg>
-            </div>
-            <div class="brand-text">
-                <h2>Portero <span>SEGURO</span></h2>
-                <p>Security Command Center</p>
+        <div class="logo-container">
+            <img src="https://raw.githubusercontent.com/aromq90-max/PorteroSeguro/refs/heads/main/2024-LOGO-RGB-01-WEB.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
+            <div id="altLogo" style="display:none; font-weight:900; font-size:20px; color:var(--brand-orange)">
+                Portero <span style="color:#222">SEGURO</span>
             </div>
         </div>
 
         <div class="header-title">
-            <h1>MONITOREO DE EDIFICIOS</h1>
-            <p>SISTEMA CONTROLADOR EN TIEMPO REAL</p>
+            <h1>CENTRO DE CONTROL & MONITOREO UNIFICADO</h1>
+            <p>SISTEMA CONTROLADOR OPERATIVO EN TIEMPO REAL</p>
         </div>
 
         <div class="header-clock">
@@ -401,91 +374,74 @@ body {
         </div>
     </header>
 
-    <section class="shifts-grid">
-        <article class="shift-card morning" id="currentShiftCard">
-            <div class="shift-header">
-                <div class="shift-info">
-                    <span class="shift-icon" id="shiftIcon">☀</span>
+    <div class="main-content">
+        
+        <section class="left-panel">
+            <div class="panel-header">
+                <div class="shift-info-box">
+                    <div class="weather-icon-wrapper">
+                        <span class="shift-icon" id="shiftIcon">🌤️</span>
+                    </div>
                     <div>
-                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA 06:45 - 18:15</div>
-                        <div class="shift-time" id="shiftTime">06:45 - 18:15 HRS</div>
+                        <div class="shift-text-title" id="shiftTitle">TURNO TARDE</div>
+                        <div class="shift-text-sub" id="shiftTime">18:15 - 22:00 HRS</div>
                     </div>
                 </div>
 
-                <div class="badge-count">
-                    <span class="num" id="shiftCount">0</span>
-                    <span class="lbl">EDIFICIOS</span>
+                <div class="counter-badge">
+                    <div class="num" id="shiftCount">0</div>
+                    <div class="lbl">EDIFICIOS</div>
                 </div>
             </div>
 
-            <div class="building-table">
-                <div class="table-head">
-                    <span>EDIFICIO</span>
-                    <span>ESTADO</span>
-                </div>
-
-                <div class="scroll-container">
-                    <div class="scroll-track" id="buildingTrack">
-                        <div class="building-row">
-                            <span>CARGANDO EDIFICIOS...</span>
-                            <span class="status-pill"><span class="status-dot"></span>ACTIVO</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </article>
-    </section>
-
-    <section class="bottom-section">
-        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80" class="bg-monitoring-room" alt="Control Room">
-
-        <div class="overlay-content">
-            <div class="stat-card">
-                <span class="title">TOTAL EDIFICIOS ACTIVOS</span>
-                <span class="value" id="totalBuildings">0</span>
-                <span class="sub">REGISTRADOS REALES</span>
+            <div class="table-head">
+                <span>EDIFICIO</span>
+                <span>ESTADO</span>
             </div>
 
-            <div class="stat-card">
-                <span class="title">ESTADO GENERAL</span>
-                <div class="status-badge-circle">
-                    <svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/></svg>
-                </div>
-                <span class="status-text" id="generalStatus">CARGANDO</span>
-                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONEXIÓN EN VIVO • TIEMPO REAL</span>
+            <div class="scroll-container">
+                <div class="scroll-track" id="buildingTrack"></div>
             </div>
+        </section>
 
-            <div></div>
-
-            <div class="critical-card">
-                <div class="critical-header">
-                    <span>★ EDIFICIOS CRÍTICOS / VIP</span>
-                </div>
-                <div class="critical-scroll">
-                    <div class="critical-track">
-                        <div class="critical-row"><span class="star-icon">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>SEDE CENTRAL PORTERO SEGURO</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
-                    </div>
-                </div>
+        <aside class="right-panel">
+            <div class="vip-header">
+                <span class="vip-header-title">★ EDIFICIOS CRÍTICOS / VIP</span>
+                <span class="vip-counter" id="vipCount">0</span>
             </div>
-        </div>
-    </section>
+            <div class="vip-static-container" id="vipList"></div>
+        </aside>
+
+    </div>
 
     <footer class="footer">
-        <span>📢 OPERACIÓN EN VIVO • RED DE MONITOREO UNIFICADA</span>
+        <span>📶 OPERACIÓN EN VIVO - RED DE MONITOREO UNIFICADA</span>
         <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong></span>
     </footer>
 
 </div>
 
 <script>
-// URL Integrada de Google Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
 
-let allBuildings = [];
+let allBuildings = [
+    { nombre: "BOL3 - Edificio Bolognesi 3", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "MDS - Marginal De la Selva", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "MMR - Montemar", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "PI2 - Picaflores2", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true }
+];
+
+const vipBuildings = [
+    "CENTRO EMPRESARIAL REAL",
+    "DEU - CENTRAL PORTERO SEGURO",
+    "EDIFICIO CORPORATIVO PRIME",
+    "RESIDENCIAL PLATINUM BAY",
+    "TORRE FINANCIERA GLOBAL"
+];
+
 let lastShiftKey = "";
 
 function updateClock() {
@@ -507,55 +463,52 @@ function currentShift() {
     const min = now.getHours() * 60 + now.getMinutes();
 
     if (min >= 6 * 60 + 45 && min < 18 * 60 + 15) {
-        return { key: "morning", title: "TURNO MAÑANA 06:45 - 18:15", time: "06:45 - 18:15 HRS", icon: "☀" };
+        return { key: "morning", title: "TURNO MAÑANA", time: "06:45 - 18:15 HRS", icon: "☀️" };
     }
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
-        return { key: "afternoon", title: "TURNO TARDE 18:15 - 22:00", time: "18:15 - 22:00 HRS", icon: "🌤" };
+        return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 22:00 HRS", icon: "🌤️" };
     }
-    return { key: "night", title: "MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
+    return { key: "night", title: "TURNO NOCHE", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 async function loadBuildings() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now());
-        if (!response.ok) throw new Error("HTTP " + response.status);
+        const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) return;
 
         const data = await response.json();
         
-        // Evita re-renderizar la UI si los datos en la hoja no cambiaron
-        const newDataString = JSON.stringify(data);
-        if (window.lastDataString === newDataString) return;
-        window.lastDataString = newDataString;
-
-        allBuildings = data;
-
-        document.getElementById("totalBuildings").textContent = allBuildings.length;
-        document.getElementById("generalStatus").textContent = "OPERATIVO";
-        document.getElementById("generalSub").textContent = "CONEXIÓN EN VIVO • EN TIEMPO REAL";
-
-        renderCurrentShift();
-
+        if (Array.isArray(data) && data.length > 0) {
+            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+            
+            const newDataString = JSON.stringify(data);
+            if (window.lastDataString !== newDataString) {
+                window.lastDataString = newDataString;
+                allBuildings = data;
+                renderCurrentShift();
+            }
+        }
     } catch (e) {
-        console.error(e);
-        document.getElementById("generalSub").textContent = "RECONECTANDO CON LA BASE DE DATOS...";
+        // Mantiene operando la app
     }
 }
 
 function renderCurrentShift() {
     const shift = currentShift();
-    const card = document.getElementById("currentShiftCard");
-    
-    card.classList.remove("morning", "afternoon", "night");
-    card.classList.add(shift.key);
 
     document.getElementById("shiftIcon").textContent = shift.icon;
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
     const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return b.esManana;
-        if (shift.key === "afternoon") return b.esTarde;
-        return b.esNoche;
+        if (shift.key === "morning") return b.esManana ?? true;
+        if (shift.key === "afternoon") return b.esTarde ?? true;
+        return b.esNoche ?? true;
     });
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
@@ -564,36 +517,51 @@ function renderCurrentShift() {
 
     if (!edificiosDelTurno.length) {
         track.style.animation = "none";
-        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS ACTIVOS EN ESTE TURNO</span></div>`;
+        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span><div></div></div>`;
         return;
     }
 
-    const singleBlockHtml = edificiosDelTurno.map(b => `
+    const listHtml = edificiosDelTurno.map(b => `
         <div class="building-row">
             <span>${escapeHTML(b.nombre)}</span>
-            <span class="status-pill">
-                <span class="status-dot"></span>ACTIVO
-            </span>
+            <div>
+                <span class="status-pill">
+                    <span class="status-dot"></span>EN LÍNEA
+                </span>
+            </div>
         </div>
     `).join("");
 
-    // Repetición para crear animación continua fluida sin pausas
-    track.innerHTML = singleBlockHtml + singleBlockHtml + singleBlockHtml + singleBlockHtml;
+    track.innerHTML = listHtml + listHtml;
     
-    const duration = Math.max(15, edificiosDelTurno.length * 2.5);
-    track.style.animation = `scrollContinuous ${duration}s linear infinite`;
+    const duration = Math.max(12, edificiosDelTurno.length * 2.5);
+    track.style.animation = `scrollLoop ${duration}s linear infinite`;
+}
+
+function renderVipBuildings() {
+    const container = document.getElementById("vipList");
+    document.getElementById("vipCount").textContent = vipBuildings.length;
+
+    container.innerHTML = vipBuildings.map(item => `
+        <div class="vip-row">
+            <span class="star">★</span>
+            <span>${escapeHTML(item)}</span>
+        </div>
+    `).join("");
 }
 
 function escapeHTML(str) {
     return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
-setInterval(updateClock, 1000);
 updateClock();
-loadBuildings();
+allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+renderCurrentShift();
+renderVipBuildings();
 
-// Consultas constantes cada 3 segundos para actualización instantánea
-setInterval(loadBuildings, 3000);
+setInterval(updateClock, 1000);
+loadBuildings();
+setInterval(loadBuildings, 5000);
 </script>
 
 </body>
