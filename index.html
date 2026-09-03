@@ -155,11 +155,10 @@ html, body {
     filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
 }
 
-/* TITULO DE TURNO EN COLOR NARANJA INSTITUCIONAL */
 .shift-text-title {
     font-size: 32px;
     font-weight: 900;
-    color: var(--brand-orange);
+    color: #2C3E50;
     line-height: 1.1;
     letter-spacing: -0.5px;
 }
@@ -235,7 +234,7 @@ html, body {
     color: #2C3E50;
 }
 
-/* ESTADO EN LÍNEA CON LUZ VIBRANTE / PULSANTE */
+/* ESTADO EN LÍNEA */
 .status-pill {
     display: inline-flex;
     align-items: center;
@@ -318,7 +317,6 @@ html, body {
     flex-direction: column;
 }
 
-/* NOMBRES DE EDIFICIOS CRÍTICOS/VIP EN COLOR NARANJA INSTITUCIONAL */
 .vip-row {
     display: flex;
     align-items: center;
@@ -327,7 +325,7 @@ html, body {
     border-bottom: 1px solid #F5F5F5;
     font-size: 13px;
     font-weight: 800;
-    color: var(--brand-orange);
+    color: #2C3E50;
 }
 
 .vip-row .star {
@@ -424,17 +422,11 @@ html, body {
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
+// URL NUEVA ACTUALIZADA
+const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
 
-let allBuildings = [
-    { nombre: "BOL3 - Edificio Bolognesi 3", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "MDS - Marginal De la Selva", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "MMR - Montemar", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "PI2 - Picaflores2", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true }
-];
+// SE ELIMINARON LOS 7 EDIFICIOS POR DEFECTO
+let allBuildings = [];
 
 const vipBuildings = [
     "CENTRO EMPRESARIAL REAL",
@@ -475,7 +467,7 @@ function currentShift() {
 
 async function loadBuildings() {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
 
     try {
         const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
@@ -485,7 +477,7 @@ async function loadBuildings() {
 
         const data = await response.json();
         
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
             data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
             
             const newDataString = JSON.stringify(data);
@@ -496,7 +488,7 @@ async function loadBuildings() {
             }
         }
     } catch (e) {
-        // Mantiene operando la app en caso de timeout
+        // Mantiene la app activa ante reintentos
     }
 }
 
@@ -557,7 +549,6 @@ function escapeHTML(str) {
 }
 
 updateClock();
-allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
 renderCurrentShift();
 renderVipBuildings();
 
