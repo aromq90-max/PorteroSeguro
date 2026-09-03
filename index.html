@@ -489,9 +489,6 @@ async function loadBuildings() {
         console.log(`[API Check] Total de edificios recibidos desde el backend: ${data.length}`);
 
         if (Array.isArray(data) && data.length > 0) {
-            // Imprimir una muestra en consola para diagnosticar qué claves trae el JSON exactamente
-            console.log("[Estructura del primer elemento recibído]:", data[0]);
-
             data.sort((a, b) => (a.nombre || "").localeCompare((b.nombre || ""), 'es', { sensitivity: 'base' }));
             
             const newDataString = JSON.stringify(data);
@@ -513,17 +510,6 @@ async function loadBuildings() {
     }
 }
 
-// Función auxiliar para validar booleanos flexibles (Maneja "true", true, 1, null, undefined)
-function isShiftActive(val) {
-    if (val === undefined || val === null || val === "") return true; // Por defecto activo si no se especificó
-    if (typeof val === "boolean") return val;
-    if (typeof val === "string") {
-        const clean = val.trim().toLowerCase();
-        if (clean === "false" || clean === "0" || clean === "no") return false;
-    }
-    return Boolean(val);
-}
-
 function renderCurrentShift() {
     const shift = currentShift();
 
@@ -531,13 +517,24 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return isShiftActive(b.esManana);
-        if (shift.key === "afternoon") return isShiftActive(b.esTarde);
-        return isShiftActive(b.esNoche);
+    // Filtra según el turno actual. Si el campo no existe o no es booleano explicito, se asume activo.
+    let edificiosDelTurno = allBuildings.filter(b => {
+        let isVal = true;
+        if (shift.key === "morning") isVal = b.esManana;
+        else if (shift.key === "afternoon") isVal = b.esTarde;
+        else if (shift.key === "night") isVal = b.esNoche;
+
+        // Si la propiedad es undefined o null, se toma como verdadero (activo por defecto)
+        return isVal !== false;
     });
 
-    console.log(`[Turno Check] Edificios para ${shift.title}: ${edificiosDelTurno.length} de ${allBuildings.length}`);
+    // Si el filtro estricto deja 0 edificios, muestra todos como respaldo para evitar pantalla vacía
+    if (edificiosDelTurno.length === 0 && allBuildings.length > 0) {
+        console.warn(`[Turno Check] Ningún edificio está configurado con 'true' para ${shift.title}. Mostrando lista completa (${allBuildings.length}).`);
+        edificiosDelTurno = allBuildings;
+    } else {
+        console.log(`[Turno Check] Edificios activos para ${shift.title}: ${edificiosDelTurno.length} de ${allBuildings.length}`);
+    }
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
 
@@ -562,8 +559,8 @@ function renderCurrentShift() {
 
     track.innerHTML = listHtml + listHtml;
     
-    // Ajuste dinámico de velocidad del scroll según la cantidad de registros
-    const duration = Math.max(15, edificiosDelTurno.length * 1.8);
+    // Ajusta la velocidad del scroll según la cantidad de edificios
+    const duration = Math.max(15, edificiosDelTurno.length * 1.5);
     track.style.animation = `scrollLoop ${duration}s linear infinite`;
 }
 
