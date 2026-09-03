@@ -274,7 +274,7 @@ html, body {
     }
 }
 
-/* PANEL DERECHO (ESTÁTICO) */
+/* PANEL DERECHO */
 .right-panel {
     background: var(--card-bg);
     border-radius: 12px;
@@ -422,8 +422,8 @@ html, body {
 </div>
 
 <script>
-// Tu Web App URL enviada
-const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
+// Nueva URL actualizada
+const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
 
 let allBuildings = [];
 
@@ -477,9 +477,8 @@ async function loadBuildings() {
         const data = await response.json();
         
         if (Array.isArray(data) && data.length > 0) {
-            statusElem.textContent = `📶 OPERACIÓN EN VIVO - RED CONECTADA (${data.length} EDIFICIOS DESCARGADOS)`;
+            statusElem.textContent = `📶 OPERACIÓN EN VIVO - RED CONECTADA (${data.length} EDIFICIOS CARGADOS)`;
             
-            // Ordenar alfabéticamente
             data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
             
             allBuildings = data;
@@ -500,7 +499,6 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    // Filtra considerando verdadero si no viene especificado
     const edificiosDelTurno = allBuildings.filter(b => {
         if (shift.key === "morning") return b.esManana ?? true;
         if (shift.key === "afternoon") return b.esTarde ?? true;
@@ -513,7 +511,7 @@ function renderCurrentShift() {
 
     if (!edificiosDelTurno.length) {
         track.style.animation = "none";
-        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS EN ESTE TURNO</span><div></div></div>`;
+        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS</span><div></div></div>`;
         return;
     }
 
