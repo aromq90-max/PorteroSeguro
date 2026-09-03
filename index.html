@@ -173,7 +173,7 @@ html, body {
     letter-spacing: 1px;
 }
 
-/* TABLA Y SCROLL INFINITO */
+/* TABLA Y ANIMACIÓN DE SCROLL */
 .table-head {
     display: grid;
     grid-template-columns: 1fr 180px;
@@ -196,10 +196,9 @@ html, body {
     display: flex;
     flex-direction: column;
     will-change: transform;
-    animation: scrollContinuous 35s linear infinite;
 }
 
-@keyframes scrollContinuous {
+@keyframes scrollLoop {
     0% { transform: translateY(0); }
     100% { transform: translateY(-50%); }
 }
@@ -317,7 +316,6 @@ html, body {
 
     <header class="header">
         <div class="logo-container">
-            <!-- URL del Logo cargada directamente -->
             <img src="https://raw.githubusercontent.com/aromq90-max/PorteroSeguro/refs/heads/main/2024-LOGO-RGB-01-WEB.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
             <div id="altLogo" style="display:none; font-weight:900; font-size:20px; color:var(--brand-orange)">
                 Portero <span style="color:#222">SEGURO</span>
@@ -359,12 +357,7 @@ html, body {
             </div>
 
             <div class="scroll-container">
-                <div class="scroll-track" id="buildingTrack">
-                    <div class="building-row">
-                        <span>CONECTANDO A BASE DE DATOS...</span>
-                        <div><span class="status-pill"><span class="status-dot"></span>• ACTIVO</span></div>
-                    </div>
-                </div>
+                <div class="scroll-track" id="buildingTrack"></div>
             </div>
         </section>
 
@@ -400,9 +393,9 @@ html, body {
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
 
-// Datos de demostración locales
-const fallbackBuildings = [
-    { nombre: "BOL3 - Edificio Bolognes 3", esManana: true, esTarde: true, esNoche: true },
+// Datos locales por defecto
+let allBuildings = [
+    { nombre: "BOL3 - Edificio Bolognesi 3", esManana: true, esTarde: true, esNoche: true },
     { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
     { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true },
     { nombre: "MDS - Marginal De la Selva", esManana: true, esTarde: true, esNoche: true },
@@ -411,7 +404,6 @@ const fallbackBuildings = [
     { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true }
 ];
 
-let allBuildings = [];
 let lastShiftKey = "";
 
 function updateClock() {
@@ -442,34 +434,29 @@ function currentShift() {
 }
 
 async function loadBuildings() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now());
-        if (!response.ok) throw new Error("HTTP " + response.status);
+        const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) return;
 
         const data = await response.json();
         
         if (Array.isArray(data) && data.length > 0) {
-            allBuildings = data;
-        } else if (allBuildings.length === 0) {
-            allBuildings = fallbackBuildings;
+            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+            
+            const newDataString = JSON.stringify(data);
+            if (window.lastDataString !== newDataString) {
+                window.lastDataString = newDataString;
+                allBuildings = data;
+                renderCurrentShift();
+            }
         }
-
-        // Ordenamiento alfabético automático (A-Z)
-        allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-
-        const newDataString = JSON.stringify(allBuildings);
-        if (window.lastDataString === newDataString) return;
-        window.lastDataString = newDataString;
-
-        renderCurrentShift();
-
     } catch (e) {
-        console.error("Error al conectar con la API:", e);
-        if (allBuildings.length === 0) {
-            allBuildings = fallbackBuildings;
-            allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-            renderCurrentShift();
-        }
+        // Mantiene la lista activa si el servidor tarda
     }
 }
 
@@ -496,7 +483,7 @@ function renderCurrentShift() {
         return;
     }
 
-    const singleBlockHtml = edificiosDelTurno.map(b => `
+    const listHtml = edificiosDelTurno.map(b => `
         <div class="building-row">
             <span>${escapeHTML(b.nombre)}</span>
             <div>
@@ -507,21 +494,24 @@ function renderCurrentShift() {
         </div>
     `).join("");
 
-    track.innerHTML = singleBlockHtml + singleBlockHtml + singleBlockHtml + singleBlockHtml;
+    track.innerHTML = listHtml + listHtml;
     
-    const duration = Math.max(15, edificiosDelTurno.length * 3);
-    track.style.animation = `scrollContinuous ${duration}s linear infinite`;
+    const duration = Math.max(12, edificiosDelTurno.length * 2.5);
+    track.style.animation = `scrollLoop ${duration}s linear infinite`;
 }
 
 function escapeHTML(str) {
     return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
-setInterval(updateClock, 1000);
+// Inicialización de la pantalla
 updateClock();
-loadBuildings();
+allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+renderCurrentShift();
 
-setInterval(loadBuildings, 3000);
+setInterval(updateClock, 1000);
+loadBuildings();
+setInterval(loadBuildings, 5000);
 </script>
 
 </body>
