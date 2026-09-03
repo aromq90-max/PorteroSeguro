@@ -234,7 +234,7 @@
             color: #2C3E50;
         }
 
-        /* ESTADO EN LÍNEA CON LUZ VIBRANTE / PULSANTE */
+        /* ESTADO EN LÍNEA PULSANTE */
         .status-pill {
             display: inline-flex;
             align-items: center;
@@ -274,7 +274,7 @@
             }
         }
 
-        /* PANEL DERECHO (ESTÁTICO) */
+        /* PANEL DERECHO */
         .right-panel {
             background: var(--card-bg);
             border-radius: 12px;
@@ -422,18 +422,10 @@
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
+// URL ACTUALIZADA CON TU NUEVO ID DE DESPLIEGUE
+const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
 
-// Datos iniciales de contingencia
-let allBuildings = [
-    { nombre: "BOL3 - Edificio Bolognesi 3", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "MDS - Marginal De la Selva", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "MMR - Montemar", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "PI2 - Picaflores2", esManana: true, esTarde: true, esNoche: true },
-    { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true }
-];
+let allBuildings = [];
 
 const vipBuildings = [
     "CENTRO EMPRESARIAL REAL",
@@ -473,30 +465,18 @@ function currentShift() {
 }
 
 async function loadBuildings() {
-    // Se amplia el tiempo de espera a 10 segundos para dar tiempo a la respuesta de Google
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
-        clearTimeout(timeoutId);
-
+        const response = await fetch(API_URL + "?t=" + Date.now());
         if (!response.ok) return;
 
         const data = await response.json();
         
-        if (Array.isArray(data) && data.length > 0) {
-            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-            
-            const newDataString = JSON.stringify(data);
-            if (window.lastDataString !== newDataString) {
-                window.lastDataString = newDataString;
-                allBuildings = data;
-                renderCurrentShift();
-            }
+        if (Array.isArray(data)) {
+            allBuildings = data;
+            renderCurrentShift();
         }
     } catch (e) {
-        console.warn("No se pudo actualizar la lista en este intento, reintentando...", e);
+        console.error("Error al obtener datos de Apps Script:", e);
     }
 }
 
@@ -507,17 +487,19 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
+    // FILTRADO ESTRICTO DE ACUERDO CON LAS COLUMNAS OBTENIDAS
     const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return b.esManana ?? true;
-        if (shift.key === "afternoon") return b.esTarde ?? true;
-        return b.esNoche ?? true;
+        if (shift.key === "morning") return b.esManana === true;
+        if (shift.key === "afternoon") return b.esTarde === true;
+        if (shift.key === "night") return b.esNoche === true;
+        return false;
     });
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
 
     const track = document.getElementById("buildingTrack");
 
-    if (!edificiosDelTurno.length) {
+    if (edificiosDelTurno.length === 0) {
         track.style.animation = "none";
         track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span><div></div></div>`;
         return;
@@ -557,7 +539,6 @@ function escapeHTML(str) {
 }
 
 updateClock();
-allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
 renderCurrentShift();
 renderVipBuildings();
 
