@@ -1,354 +1,362 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portero Seguro | Centro de Control & Monitoreo Unificado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portero Seguro | Centro de Control & Monitoreo Unificado</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
 
-:root {
-    --brand-orange: #EE4023;
-    --brand-red: #D32F2F;
-    --bg-light: #F8F9FA;
-    --card-bg: #FFFFFF;
-    --border-color: #EAEAEA;
-    --text-dark: #222222;
-    --text-muted: #888888;
-    --status-bg: #E8F5E9;
-    --status-green: #2E7D32;
-    --glow-green: #00E676;
-}
+        :root {
+            --brand-orange: #EE4023;
+            --brand-red: #D32F2F;
+            --bg-light: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --border-color: #EAEAEA;
+            --text-dark: #222222;
+            --text-muted: #888888;
+            --status-bg: #E8F5E9;
+            --status-green: #2E7D32;
+            --glow-green: #00E676;
+        }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-html, body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background-color: var(--bg-light);
-    font-family: 'Montserrat', sans-serif;
-    color: var(--text-dark);
-}
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: var(--bg-light);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark);
+        }
 
-.dashboard {
-    width: 100vw;
-    height: 100vh;
-    padding: 16px 24px;
-    display: grid;
-    grid-template-rows: 70px 1fr 30px;
-    gap: 16px;
-    background: linear-gradient(180deg, #FFFFFF 0%, #F4F5F7 100%);
-}
+        .dashboard {
+            width: 100vw;
+            height: 100vh;
+            padding: 16px 24px;
+            display: grid;
+            grid-template-rows: 70px 1fr 30px;
+            gap: 16px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F4F5F7 100%);
+        }
 
-/* HEADER */
-.header {
-    display: grid;
-    grid-template-columns: 280px 1fr 280px;
-    align-items: center;
-}
+        /* HEADER */
+        .header {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            align-items: center;
+        }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.logo-img {
-    max-height: 55px;
-    width: auto;
-    object-fit: contain;
-}
+        .logo-img {
+            max-height: 55px;
+            width: auto;
+            object-fit: contain;
+        }
 
-.header-title {
-    text-align: center;
-}
+        .header-title {
+            text-align: center;
+        }
 
-.header-title h1 {
-    font-size: 21px;
-    font-weight: 900;
-    color: var(--brand-orange);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
+        .header-title h1 {
+            font-size: 21px;
+            font-weight: 900;
+            color: var(--brand-orange);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-.header-title p {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    font-weight: 700;
-    margin-top: 2px;
-}
+        .header-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
 
-.header-clock {
-    text-align: right;
-}
+        .header-clock {
+            text-align: right;
+        }
 
-.time-display {
-    font-size: 26px;
-    font-weight: 900;
-    color: var(--brand-orange);
-}
+        .time-display {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-orange);
+        }
 
-.date-display {
-    font-size: 10px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 700;
-}
+        .date-display {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
 
-/* MAIN CONTENT GRID */
-.main-content {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 20px;
-    min-height: 0;
-}
+        /* MAIN CONTENT GRID */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            min-height: 0;
+        }
 
-/* PANEL IZQUIERDO */
-.left-panel {
-    background: var(--card-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+        /* PANEL IZQUIERDO */
+        .left-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-.panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border-color);
-    background: #FAFAFA;
-}
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: #FAFAFA;
+        }
 
-.shift-info-box {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
+        .shift-info-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-.weather-icon-wrapper {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #FFF;
-    box-shadow: 0 4px 12px rgba(238, 64, 35, 0.12);
-    border: 1px solid #FFE0B2;
-}
+        .weather-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #FFF;
+            box-shadow: 0 4px 12px rgba(238, 64, 35, 0.12);
+            border: 1px solid #FFE0B2;
+        }
 
-.shift-icon {
-    font-size: 38px;
-    line-height: 1;
-    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
-}
+        .shift-icon {
+            font-size: 38px;
+            line-height: 1;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
+        }
 
-.shift-text-title {
-    font-size: 32px;
-    font-weight: 900;
-    color: #2C3E50;
-    line-height: 1.1;
-    letter-spacing: -0.5px;
-}
+        .shift-text-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1A1A1A;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
 
-.shift-text-sub {
-    font-size: 14px;
-    color: var(--brand-orange);
-    font-weight: 800;
-    margin-top: 4px;
-    letter-spacing: 0.5px;
-}
+        .shift-text-sub {
+            font-size: 14px;
+            color: var(--brand-orange);
+            font-weight: 800;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
 
-.counter-badge {
-    border: 2px solid var(--brand-orange);
-    border-radius: 10px;
-    padding: 8px 24px;
-    text-align: center;
-    background: #FFF;
-}
+        .counter-badge {
+            border: 2px solid var(--brand-orange);
+            border-radius: 10px;
+            padding: 8px 24px;
+            text-align: center;
+            background: #FFF;
+        }
 
-.counter-badge .num {
-    font-size: 26px;
-    font-weight: 900;
-    color: var(--brand-orange);
-    line-height: 1;
-}
+        .counter-badge .num {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-orange);
+            line-height: 1;
+        }
 
-.counter-badge .lbl {
-    font-size: 9px;
-    font-weight: 800;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-}
+        .counter-badge .lbl {
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
 
-/* TABLA Y SCROLL CONTINUO */
-.table-head {
-    display: grid;
-    grid-template-columns: 1fr 180px;
-    padding: 14px 24px;
-    font-size: 13px;
-    color: var(--brand-orange);
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    background: #FFFFFF;
-    border-bottom: 1px solid var(--border-color);
-}
+        /* TABLA Y SCROLL CONTINUO */
+        .table-head {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            padding: 14px 24px;
+            font-size: 13px;
+            color: var(--brand-orange);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-.scroll-container {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-}
+        .scroll-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
 
-.scroll-track {
-    display: flex;
-    flex-direction: column;
-    will-change: transform;
-}
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            will-change: transform;
+        }
 
-@keyframes scrollLoop {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
-}
+        @keyframes scrollLoop {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
 
-.building-row {
-    display: grid;
-    grid-template-columns: 1fr 180px;
-    align-items: center;
-    padding: 18px 24px;
-    border-bottom: 1px solid #F0F0F0;
-    font-size: 18px;
-    font-weight: 800;
-    color: #2C3E50;
-}
+        .building-row {
+            display: grid;
+            grid-template-columns: 1fr 180px;
+            align-items: center;
+            padding: 18px 24px;
+            border-bottom: 1px solid #F0F0F0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #2C3E50;
+        }
 
-/* ESTADO EN LÍNEA */
-.status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 6px 14px;
-    border-radius: 20px;
-    background: var(--status-bg);
-    color: var(--status-green);
-    width: fit-content;
-    border: 1px solid rgba(46, 125, 50, 0.2);
-}
+        /* ESTADO EN LÍNEA PULSANTE */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: var(--status-bg);
+            color: var(--status-green);
+            width: fit-content;
+            border: 1px solid rgba(46, 125, 50, 0.2);
+        }
 
-.status-dot {
-    position: relative;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: var(--glow-green);
-    box-shadow: 0 0 8px var(--glow-green);
-    animation: pulseGlow 1.4s infinite ease-in-out;
-}
+        .status-dot {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--glow-green);
+            box-shadow: 0 0 8px var(--glow-green);
+            animation: pulseGlow 1.4s infinite ease-in-out;
+        }
 
-@keyframes pulseGlow {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0.7);
-    }
-    50% {
-        transform: scale(1.15);
-        box-shadow: 0 0 12px var(--glow-green), 0 0 0 6px rgba(0, 230, 118, 0);
-    }
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0);
-    }
-}
+        @keyframes pulseGlow {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0.7);
+            }
+            50% {
+                transform: scale(1.15);
+                box-shadow: 0 0 12px var(--glow-green), 0 0 0 6px rgba(0, 230, 118, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 4px var(--glow-green), 0 0 0 0 rgba(0, 230, 118, 0);
+            }
+        }
 
-/* PANEL DERECHO (ESTÁTICO) */
-.right-panel {
-    background: var(--card-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
+        /* PANEL DERECHO */
+        .right-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-.vip-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 10px;
-}
+        .vip-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
 
-.vip-header-title {
-    font-size: 13px;
-    font-weight: 900;
-    color: var(--brand-orange);
-    letter-spacing: 0.5px;
-}
+        .vip-header-title {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--brand-orange);
+            letter-spacing: 0.5px;
+        }
 
-.vip-counter {
-    background: rgba(238, 64, 35, 0.1);
-    color: var(--brand-orange);
-    font-weight: 900;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 12px;
-}
+        .vip-counter {
+            background: rgba(238, 64, 35, 0.1);
+            color: var(--brand-orange);
+            font-weight: 900;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
 
-.vip-static-container {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
+        .vip-static-container {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
 
-.vip-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #F5F5F5;
-    font-size: 13px;
-    font-weight: 800;
-    color: #2C3E50;
-}
+        .vip-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F5F5F5;
+            font-size: 13px;
+            font-weight: 800;
+            color: #333;
+        }
 
-.vip-row .star {
-    color: var(--brand-orange);
-    font-size: 15px;
-}
+        .vip-row .star {
+            color: var(--brand-orange);
+            font-size: 15px;
+        }
 
-/* FOOTER */
-.footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 8px;
-    font-size: 10px;
-    color: #A0A0A0;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
+        .vip-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 16px 0;
+            text-align: center;
+        }
 
-.footer strong {
-    color: var(--brand-orange);
-}
-</style>
+        /* FOOTER */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            font-size: 10px;
+            color: #A0A0A0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .footer strong {
+            color: var(--brand-orange);
+        }
+    </style>
 </head>
 
 <body>
@@ -422,20 +430,9 @@ html, body {
 </div>
 
 <script>
-// URL NUEVA ACTUALIZADA
 const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
 
-// SE ELIMINARON LOS 7 EDIFICIOS POR DEFECTO
 let allBuildings = [];
-
-const vipBuildings = [
-    "CENTRO EMPRESARIAL REAL",
-    "DEU - CENTRAL PORTERO SEGURO",
-    "EDIFICIO CORPORATIVO PRIME",
-    "RESIDENCIAL PLATINUM BAY",
-    "TORRE FINANCIERA GLOBAL"
-];
-
 let lastShiftKey = "";
 
 function updateClock() {
@@ -462,33 +459,23 @@ function currentShift() {
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
         return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 22:00 HRS", icon: "🌤️" };
     }
-    return { key: "night", title: "TURNO NOCHE", time: "22:00 - 06:45 HRS", icon: "🌙" };
+    // CAMBIADO A TURNO MADRUGADA
+    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 async function loadBuildings() {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
     try {
-        const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
-        clearTimeout(timeoutId);
-
+        const response = await fetch(API_URL + "?t=" + Date.now());
         if (!response.ok) return;
 
         const data = await response.json();
         
         if (Array.isArray(data)) {
-            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
-            
-            const newDataString = JSON.stringify(data);
-            if (window.lastDataString !== newDataString) {
-                window.lastDataString = newDataString;
-                allBuildings = data;
-                renderCurrentShift();
-            }
+            allBuildings = data;
+            renderCurrentShift();
         }
     } catch (e) {
-        // Mantiene la app activa ante reintentos
+        console.error("Error al obtener datos de Apps Script:", e);
     }
 }
 
@@ -499,47 +486,64 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
+    // 1. FILTRAR EDIFICIOS DEL TURNO PRINCIPAL
     const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return b.esManana ?? true;
-        if (shift.key === "afternoon") return b.esTarde ?? true;
-        return b.esNoche ?? true;
+        if (shift.key === "morning") return b.esManana === true;
+        if (shift.key === "afternoon") return b.esTarde === true;
+        if (shift.key === "night") return b.esNoche === true;
+        return false;
     });
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
 
     const track = document.getElementById("buildingTrack");
 
-    if (!edificiosDelTurno.length) {
+    if (edificiosDelTurno.length === 0) {
         track.style.animation = "none";
         track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span><div></div></div>`;
+    } else {
+        const listHtml = edificiosDelTurno.map(b => `
+            <div class="building-row">
+                <span>${escapeHTML(b.nombre)}</span>
+                <div>
+                    <span class="status-pill">
+                        <span class="status-dot"></span>EN LÍNEA
+                    </span>
+                </div>
+            </div>
+        `).join("");
+
+        track.innerHTML = listHtml + listHtml;
+        const duration = Math.max(12, edificiosDelTurno.length * 2.5);
+        track.style.animation = `scrollLoop ${duration}s linear infinite`;
+    }
+
+    // 2. FILTRAR Y RENDERIZAR EDIFICIOS CRÍTICOS / VIP
+    renderVipBuildings(shift.key);
+}
+
+function renderVipBuildings(shiftKey) {
+    const container = document.getElementById("vipList");
+
+    // Filtrar según fideManana, fideTarde o fideNoche
+    const edificiosVip = allBuildings.filter(b => {
+        if (shiftKey === "morning") return b.esFideManana === true;
+        if (shiftKey === "afternoon") return b.esFideTarde === true;
+        if (shiftKey === "night") return b.esFideNoche === true;
+        return false;
+    });
+
+    document.getElementById("vipCount").textContent = edificiosVip.length;
+
+    if (edificiosVip.length === 0) {
+        container.innerHTML = `<div class="vip-empty">SIN EDIFICIOS CRÍTICOS EN ESTE TURNO</div>`;
         return;
     }
 
-    const listHtml = edificiosDelTurno.map(b => `
-        <div class="building-row">
-            <span>${escapeHTML(b.nombre)}</span>
-            <div>
-                <span class="status-pill">
-                    <span class="status-dot"></span>EN LÍNEA
-                </span>
-            </div>
-        </div>
-    `).join("");
-
-    track.innerHTML = listHtml + listHtml;
-    
-    const duration = Math.max(12, edificiosDelTurno.length * 2.5);
-    track.style.animation = `scrollLoop ${duration}s linear infinite`;
-}
-
-function renderVipBuildings() {
-    const container = document.getElementById("vipList");
-    document.getElementById("vipCount").textContent = vipBuildings.length;
-
-    container.innerHTML = vipBuildings.map(item => `
+    container.innerHTML = edificiosVip.map(item => `
         <div class="vip-row">
             <span class="star">★</span>
-            <span>${escapeHTML(item)}</span>
+            <span>${escapeHTML(item.nombre)}</span>
         </div>
     `).join("");
 }
@@ -550,7 +554,6 @@ function escapeHTML(str) {
 
 updateClock();
 renderCurrentShift();
-renderVipBuildings();
 
 setInterval(updateClock, 1000);
 loadBuildings();
