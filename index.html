@@ -274,7 +274,7 @@ html, body {
     }
 }
 
-/* PANEL DERECHO */
+/* PANEL DERECHO (ESTÁTICO) */
 .right-panel {
     background: var(--card-bg);
     border-radius: 12px;
@@ -415,16 +415,16 @@ html, body {
     </div>
 
     <footer class="footer">
-        <span id="apiStatus">📶 OPERACIÓN EN VIVO - CONECTANDO...</span>
+        <span id="apiStatus">📶 OPERACIÓN EN VIVO - CONECTANDO AL SERVIDOR...</span>
         <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong></span>
     </footer>
 
 </div>
 
 <script>
+// Tu Web App URL enviada
 const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
 
-// Respaldo estático inicial
 let allBuildings = [];
 
 const vipBuildings = [
@@ -470,23 +470,25 @@ async function loadBuildings() {
         const response = await fetch(API_URL + "?t=" + Date.now(), { redirect: 'follow' });
         
         if (!response.ok) {
-            statusElem.textContent = `⚠️ ERROR API HTTP ${response.status}`;
+            statusElem.textContent = `⚠️ ERROR HTTP ${response.status}`;
             return;
         }
 
         const data = await response.json();
         
         if (Array.isArray(data) && data.length > 0) {
-            statusElem.textContent = `📶 OPERACIÓN EN VIVO - RED CONECTADA (${data.length} REGISTROS CARGADOS)`;
+            statusElem.textContent = `📶 OPERACIÓN EN VIVO - RED CONECTADA (${data.length} EDIFICIOS DESCARGADOS)`;
+            
+            // Ordenar alfabéticamente
             data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
             
             allBuildings = data;
             renderCurrentShift();
         } else {
-            statusElem.textContent = "⚠️ LA BASE DE DATOS DE GOOGLE SHEETS DEVOLVIÓ 0 EDIFICIOS";
+            statusElem.textContent = "⚠️ LA BASE DE DATOS RETORNÓ 0 EDIFICIOS";
         }
     } catch (e) {
-        statusElem.textContent = "⚠️ ERROR DE CONEXIÓN CON GOOGLE APPS SCRIPT (REVISAR CORs/PERMISOS)";
+        statusElem.textContent = "⚠️ ERROR AL CONECTAR CON APPS SCRIPT";
         console.error("Error al obtener edificios:", e);
     }
 }
@@ -498,7 +500,7 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    // Filtrar por turno según las columnas devueltas por el script
+    // Filtra considerando verdadero si no viene especificado
     const edificiosDelTurno = allBuildings.filter(b => {
         if (shift.key === "morning") return b.esManana ?? true;
         if (shift.key === "afternoon") return b.esTarde ?? true;
@@ -511,7 +513,7 @@ function renderCurrentShift() {
 
     if (!edificiosDelTurno.length) {
         track.style.animation = "none";
-        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span><div></div></div>`;
+        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS EN ESTE TURNO</span><div></div></div>`;
         return;
     }
 
@@ -553,7 +555,7 @@ renderVipBuildings();
 
 setInterval(updateClock, 1000);
 loadBuildings();
-setInterval(loadBuildings, 10000);
+setInterval(loadBuildings, 5000);
 </script>
 
 </body>
