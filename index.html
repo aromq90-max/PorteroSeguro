@@ -155,11 +155,11 @@ html, body {
     filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.15));
 }
 
-/* TÍTULO DE TURNO */
+/* TITULO DE TURNO - MISMO COLOR QUE LOS EDIFICIOS (#2C3E50) */
 .shift-text-title {
     font-size: 32px;
     font-weight: 900;
-    color: var(--brand-orange) !important;
+    color: #2C3E50;
     line-height: 1.1;
     letter-spacing: -0.5px;
 }
@@ -232,14 +232,10 @@ html, body {
     border-bottom: 1px solid #F0F0F0;
     font-size: 18px;
     font-weight: 800;
+    color: #2C3E50; /* Color original de los nombres de edificios */
 }
 
-/* NOMBRES EN LA LISTA PRINCIPAL DE EDIFICIOS */
-.building-row span {
-    color: var(--brand-orange) !important;
-}
-
-/* ESTADO EN LÍNEA CON LUZ VIBRANTE / PULSANTE */
+/* ESTADO EN LÍNEA */
 .status-pill {
     display: inline-flex;
     align-items: center;
@@ -249,7 +245,7 @@ html, body {
     padding: 6px 14px;
     border-radius: 20px;
     background: var(--status-bg);
-    color: var(--status-green) !important;
+    color: var(--status-green);
     width: fit-content;
     border: 1px solid rgba(46, 125, 50, 0.2);
 }
@@ -322,7 +318,7 @@ html, body {
     flex-direction: column;
 }
 
-/* NOMBRES DE EDIFICIOS CRÍTICOS / VIP */
+/* NOMBRES DE EDIFICIOS CRÍTICOS/VIP - MISMO COLOR QUE LOS EDIFICIOS (#2C3E50) */
 .vip-row {
     display: flex;
     align-items: center;
@@ -331,7 +327,7 @@ html, body {
     border-bottom: 1px solid #F5F5F5;
     font-size: 13px;
     font-weight: 800;
-    color: var(--brand-orange) !important;
+    color: #2C3E50;
 }
 
 .vip-row .star {
@@ -500,7 +496,7 @@ async function loadBuildings() {
             }
         }
     } catch (e) {
-        // Mantiene operando la app en caso de timeout
+        // Mantiene operando la app en caso de fallo
     }
 }
 
