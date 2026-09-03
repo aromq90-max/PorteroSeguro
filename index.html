@@ -58,7 +58,6 @@ html, body {
     gap: 12px;
 }
 
-/* Espacio reservado para tu logo oficial */
 .logo-img {
     max-height: 48px;
     width: auto;
@@ -111,7 +110,7 @@ html, body {
     min-height: 0;
 }
 
-/* PANEL IZQUIERDO (TABLA PRINCIPAL) */
+/* PANEL IZQUIERDO */
 .left-panel {
     background: var(--card-bg);
     border-radius: 12px;
@@ -174,7 +173,7 @@ html, body {
     letter-spacing: 1px;
 }
 
-/* ESTRUCTURA Y SCROLL INFINITO */
+/* TABLA Y SCROLL INFINITO */
 .table-head {
     display: grid;
     grid-template-columns: 1fr 180px;
@@ -236,7 +235,7 @@ html, body {
     background: var(--status-green);
 }
 
-/* PANEL DERECHO (VIP / CRÍTICOS) */
+/* PANEL DERECHO */
 .right-panel {
     background: var(--card-bg);
     border-radius: 12px;
@@ -318,7 +317,6 @@ html, body {
 
     <header class="header">
         <div class="logo-container">
-            <!-- REEMPLAZA ESTA RUTA POR LA IMAGEN O LOGO DE PORTERO SEGURO -->
             <img src="logo.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
             <div id="altLogo" style="display:none; font-weight:900; font-size:18px; color:var(--brand-orange)">
                 Portero <span style="color:#222">SEGURO</span>
@@ -362,7 +360,7 @@ html, body {
             <div class="scroll-container">
                 <div class="scroll-track" id="buildingTrack">
                     <div class="building-row">
-                        <span>CARGANDO EDIFICIOS ACTIVOS...</span>
+                        <span>CONECTANDO A BASE DE DATOS...</span>
                         <div><span class="status-pill"><span class="status-dot"></span>• ACTIVO</span></div>
                     </div>
                 </div>
@@ -380,7 +378,6 @@ html, body {
                     <div class="vip-row"><span class="star">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
                     <div class="vip-row"><span class="star">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
                     <div class="vip-row"><span class="star">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
-                    <!-- Bloque duplicado para desplazamiento fluido -->
                     <div class="vip-row"><span class="star">★</span><span>DEU - CENTRAL PORTERO SEGURO</span></div>
                     <div class="vip-row"><span class="star">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
                     <div class="vip-row"><span class="star">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
@@ -400,8 +397,19 @@ html, body {
 </div>
 
 <script>
-// URL de tu App Script de Google Sheets para tiempo real
-const API_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID_AQUI/exec";
+// Tu Web App URL vinculada directamente
+const API_URL = "https://script.google.com/macros/s/AKfycbwOFoAvBtH-5OoQkpSRuk3kmrneoqLb_uZZUermO242zIsW43cP8kF3EINXRfD6Z9IQ/exec";
+
+// Datos de demostración (Fallback) si la hoja responde vacía
+const fallbackBuildings = [
+    { nombre: "BOL3 - Edificio Bolognes 3", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "EEG - Edificio Espacio Gamero", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "MMR - Montemar", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "MDS - Marginal De la Selva", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "SUC - Sucre", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "PI2 - Picaflores2", esManana: true, esTarde: true, esNoche: true },
+    { nombre: "EMO - Edificio Montesquieu", esManana: true, esTarde: true, esNoche: true }
+];
 
 let allBuildings = [];
 let lastShiftKey = "";
@@ -440,15 +448,26 @@ async function loadBuildings() {
 
         const data = await response.json();
         
-        const newDataString = JSON.stringify(data);
+        // Si Apps Script responde un arreglo y tiene datos, los usamos. Si viene vacío [], cargamos fallback.
+        if (Array.isArray(data) && data.length > 0) {
+            allBuildings = data;
+        } else if (allBuildings.length === 0) {
+            console.warn("La API respondió vacía. Cargando datos locales de reserva.");
+            allBuildings = fallbackBuildings;
+        }
+
+        const newDataString = JSON.stringify(allBuildings);
         if (window.lastDataString === newDataString) return;
         window.lastDataString = newDataString;
 
-        allBuildings = data;
         renderCurrentShift();
 
     } catch (e) {
-        console.error(e);
+        console.error("Error al conectar con la API:", e);
+        if (allBuildings.length === 0) {
+            allBuildings = fallbackBuildings;
+            renderCurrentShift();
+        }
     }
 }
 
@@ -460,9 +479,9 @@ function renderCurrentShift() {
     document.getElementById("shiftTime").textContent = shift.time;
 
     const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return b.esManana;
-        if (shift.key === "afternoon") return b.esTarde;
-        return b.esNoche;
+        if (shift.key === "morning") return b.esManana ?? true;
+        if (shift.key === "afternoon") return b.esTarde ?? true;
+        return b.esNoche ?? true;
     });
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
@@ -486,10 +505,8 @@ function renderCurrentShift() {
         </div>
     `).join("");
 
-    // Se multiplica la lista para asegurar un ciclo de desplazamiento infinito y fluido
     track.innerHTML = singleBlockHtml + singleBlockHtml + singleBlockHtml + singleBlockHtml;
     
-    // Ajusta la velocidad según la cantidad de elementos
     const duration = Math.max(15, edificiosDelTurno.length * 2.8);
     track.style.animation = `scrollContinuous ${duration}s linear infinite`;
 }
@@ -502,7 +519,7 @@ setInterval(updateClock, 1000);
 updateClock();
 loadBuildings();
 
-// Consulta automática de cambios cada 3 segundos
+// Consultas automáticas cada 3 segundos
 setInterval(loadBuildings, 3000);
 </script>
 
