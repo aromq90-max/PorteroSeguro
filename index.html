@@ -472,17 +472,24 @@ function currentShift() {
 }
 
 async function loadBuildings() {
+    // Se incrementa el timeout a 5 segundos (5000ms) para evitar abortos innecesarios
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
 
     try {
         const response = await fetch(API_URL + "?t=" + Date.now(), { signal: controller.signal });
         clearTimeout(timeoutId);
 
-        if (!response.ok) return;
+        if (!response.ok) {
+            console.warn("[API Error] Estado HTTP no válido:", response.status);
+            return;
+        }
 
         const data = await response.json();
         
+        // Muestra en la consola el total exacto que responde Apps Script
+        console.log(`[API Check] Total de edificios recibidos desde el backend: ${data.length}`);
+
         if (Array.isArray(data) && data.length > 0) {
             data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
             
@@ -491,10 +498,17 @@ async function loadBuildings() {
                 window.lastDataString = newDataString;
                 allBuildings = data;
                 renderCurrentShift();
+                console.log("[API Check] Interfaz actualizada con los nuevos edificios.");
             }
+        } else {
+            console.warn("[API Check] La respuesta del API fue un arreglo vacío o formato inválido.");
         }
     } catch (e) {
-        // Mantiene operando la app
+        if (e.name === 'AbortError') {
+            console.error("[API Check] Tiempo de espera agotado (Timeout > 5s). El Script tardó demasiado.");
+        } else {
+            console.error("[API Check] Error consultando la API:", e);
+        }
     }
 }
 
@@ -510,6 +524,9 @@ function renderCurrentShift() {
         if (shift.key === "afternoon") return b.esTarde ?? true;
         return b.esNoche ?? true;
     });
+
+    // Muestra en la consola cuántos pasaron el filtro del turno
+    console.log(`[Turno Check] Edificios para ${shift.title}: ${edificiosDelTurno.length} de ${allBuildings.length}`);
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
 
