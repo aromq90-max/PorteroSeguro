@@ -333,6 +333,14 @@
             font-size: 15px;
         }
 
+        .vip-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 16px 0;
+            text-align: center;
+        }
+
         /* FOOTER */
         .footer {
             display: flex;
@@ -422,19 +430,9 @@
 </div>
 
 <script>
-// URL ACTUALIZADA CON TU NUEVO ID DE DESPLIEGUE
 const API_URL = "https://script.google.com/macros/s/AKfycbwBMyacYKzXbmk1eu9U93vaTjqzbfCJi0sDHtH5gWaT55ootRiwggmybubCJeFcyfuC/exec";
 
 let allBuildings = [];
-
-const vipBuildings = [
-    "CENTRO EMPRESARIAL REAL",
-    "DEU - CENTRAL PORTERO SEGURO",
-    "EDIFICIO CORPORATIVO PRIME",
-    "RESIDENCIAL PLATINUM BAY",
-    "TORRE FINANCIERA GLOBAL"
-];
-
 let lastShiftKey = "";
 
 function updateClock() {
@@ -461,7 +459,8 @@ function currentShift() {
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
         return { key: "afternoon", title: "TURNO TARDE", time: "18:15 - 22:00 HRS", icon: "🌤️" };
     }
-    return { key: "night", title: "TURNO NOCHE", time: "22:00 - 06:45 HRS", icon: "🌙" };
+    // CAMBIADO A TURNO MADRUGADA
+    return { key: "night", title: "TURNO MADRUGADA", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 async function loadBuildings() {
@@ -487,7 +486,7 @@ function renderCurrentShift() {
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    // FILTRADO ESTRICTO DE ACUERDO CON LAS COLUMNAS OBTENIDAS
+    // 1. FILTRAR EDIFICIOS DEL TURNO PRINCIPAL
     const edificiosDelTurno = allBuildings.filter(b => {
         if (shift.key === "morning") return b.esManana === true;
         if (shift.key === "afternoon") return b.esTarde === true;
@@ -502,34 +501,49 @@ function renderCurrentShift() {
     if (edificiosDelTurno.length === 0) {
         track.style.animation = "none";
         track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS REGISTRADOS EN ESTE TURNO</span><div></div></div>`;
+    } else {
+        const listHtml = edificiosDelTurno.map(b => `
+            <div class="building-row">
+                <span>${escapeHTML(b.nombre)}</span>
+                <div>
+                    <span class="status-pill">
+                        <span class="status-dot"></span>EN LÍNEA
+                    </span>
+                </div>
+            </div>
+        `).join("");
+
+        track.innerHTML = listHtml + listHtml;
+        const duration = Math.max(12, edificiosDelTurno.length * 2.5);
+        track.style.animation = `scrollLoop ${duration}s linear infinite`;
+    }
+
+    // 2. FILTRAR Y RENDERIZAR EDIFICIOS CRÍTICOS / VIP
+    renderVipBuildings(shift.key);
+}
+
+function renderVipBuildings(shiftKey) {
+    const container = document.getElementById("vipList");
+
+    // Filtrar según fideManana, fideTarde o fideNoche
+    const edificiosVip = allBuildings.filter(b => {
+        if (shiftKey === "morning") return b.esFideManana === true;
+        if (shiftKey === "afternoon") return b.esFideTarde === true;
+        if (shiftKey === "night") return b.esFideNoche === true;
+        return false;
+    });
+
+    document.getElementById("vipCount").textContent = edificiosVip.length;
+
+    if (edificiosVip.length === 0) {
+        container.innerHTML = `<div class="vip-empty">SIN EDIFICIOS CRÍTICOS EN ESTE TURNO</div>`;
         return;
     }
 
-    const listHtml = edificiosDelTurno.map(b => `
-        <div class="building-row">
-            <span>${escapeHTML(b.nombre)}</span>
-            <div>
-                <span class="status-pill">
-                    <span class="status-dot"></span>EN LÍNEA
-                </span>
-            </div>
-        </div>
-    `).join("");
-
-    track.innerHTML = listHtml + listHtml;
-    
-    const duration = Math.max(12, edificiosDelTurno.length * 2.5);
-    track.style.animation = `scrollLoop ${duration}s linear infinite`;
-}
-
-function renderVipBuildings() {
-    const container = document.getElementById("vipList");
-    document.getElementById("vipCount").textContent = vipBuildings.length;
-
-    container.innerHTML = vipBuildings.map(item => `
+    container.innerHTML = edificiosVip.map(item => `
         <div class="vip-row">
             <span class="star">★</span>
-            <span>${escapeHTML(item)}</span>
+            <span>${escapeHTML(item.nombre)}</span>
         </div>
     `).join("");
 }
@@ -540,7 +554,6 @@ function escapeHTML(str) {
 
 updateClock();
 renderCurrentShift();
-renderVipBuildings();
 
 setInterval(updateClock, 1000);
 loadBuildings();
