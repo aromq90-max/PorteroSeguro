@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portero Seguro | Consola de Monitoreo</title>
+<title>Portero Seguro | Sistema Controlador en Tiempo Real</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
 
 :root {
     --brand-orange: #EE4023;
-    --brand-orange-glow: rgba(238, 64, 35, 0.35);
-    --bg-dark: #121315;
-    --panel-bg: rgba(26, 27, 30, 0.92);
-    --panel-border: rgba(238, 64, 35, 0.25);
-    --accent-cyan: #00e5ff;
-    --morning-color: #00e676;
-    --afternoon-color: #EE4023;
-    --night-color: #29b6f6;
+    --brand-red: #D32F2F;
+    --bg-light: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --border-color: #EAEAEA;
+    --text-dark: #222222;
+    --text-muted: #888888;
+    --status-bg: #E8F5E9;
+    --status-green: #2E7D32;
 }
 
 * {
@@ -30,74 +30,39 @@ html, body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: var(--bg-dark);
+    background-color: var(--bg-light);
     font-family: 'Montserrat', sans-serif;
-    color: #ffffff;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at 50% 30%, #1e2024 0%, var(--bg-dark) 90%);
+    color: var(--text-dark);
 }
 
 .dashboard {
     width: 100vw;
     height: 100vh;
-    padding: 12px;
+    padding: 16px 24px;
     display: grid;
-    grid-template-rows: 75px 1fr 230px 30px;
-    gap: 10px;
+    grid-template-rows: 60px 1fr 30px;
+    gap: 16px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F4F5F7 100%);
 }
 
 /* HEADER */
 .header {
     display: grid;
-    grid-template-columns: 320px 1fr 300px;
+    grid-template-columns: 280px 1fr 280px;
     align-items: center;
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
-    border: 2px solid var(--brand-orange);
-    border-radius: 12px;
-    padding: 0 24px;
-    box-shadow: 0 4px 20px rgba(238, 64, 35, 0.15);
 }
 
-.brand-wrapper {
+.logo-container {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
-.brand-logo {
-    width: 46px;
-    height: 46px;
-}
-
-.brand-logo svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--brand-orange);
-}
-
-.brand-text h2 {
-    font-size: 20px;
-    font-weight: 800;
-    line-height: 1;
-}
-
-.brand-text h2 span {
-    color: var(--brand-orange);
-}
-
-.brand-text p {
-    font-size: 10px;
-    color: #a1a1aa;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
-    margin-top: 3px;
+/* Espacio reservado para tu logo oficial */
+.logo-img {
+    max-height: 48px;
+    width: auto;
+    object-fit: contain;
 }
 
 .header-title {
@@ -105,17 +70,19 @@ body {
 }
 
 .header-title h1 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 900;
-    letter-spacing: 2px;
+    color: var(--brand-orange);
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 .header-title p {
-    font-size: 11px;
-    color: var(--brand-orange);
-    letter-spacing: 3px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
     font-weight: 700;
+    margin-top: 2px;
 }
 
 .header-clock {
@@ -123,93 +90,101 @@ body {
 }
 
 .time-display {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--accent-cyan);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--brand-orange);
 }
 
 .date-display {
-    font-size: 10px;
-    color: #a1a1aa;
+    font-size: 9px;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-weight: 700;
 }
 
-/* CARD TURNO */
-.shifts-grid {
+/* MAIN CONTENT GRID */
+.main-content {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
     min-height: 0;
 }
 
-.shift-card {
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--panel-border);
+/* PANEL IZQUIERDO (TABLA PRINCIPAL) */
+.left-panel {
+    background: var(--card-bg);
     border-radius: 12px;
-    display: grid;
-    grid-template-rows: 65px 1fr;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.shift-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.morning .shift-header { background: linear-gradient(90deg, rgba(0, 230, 118, 0.15), transparent); }
-.afternoon .shift-header { background: linear-gradient(90deg, rgba(238, 64, 35, 0.25), transparent); }
-.night .shift-header { background: linear-gradient(90deg, rgba(41, 182, 246, 0.15), transparent); }
-
-.shift-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.shift-icon { font-size: 26px; }
-.shift-title { font-size: 17px; font-weight: 800; }
-.shift-time { font-size: 13px; color: var(--brand-orange); font-weight: 700; }
-
-.badge-count {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid var(--brand-orange);
-    padding: 4px 16px;
-    border-radius: 20px;
-    text-align: right;
-}
-
-.badge-count .num { font-size: 22px; font-weight: 900; }
-.morning .badge-count .num { color: var(--morning-color); }
-.afternoon .badge-count .num { color: var(--afternoon-color); }
-.night .badge-count .num { color: var(--night-color); }
-
-.badge-count .lbl { font-size: 9px; color: #a1a1aa; display: block; font-weight: 700; }
-
-/* TABLA */
-.building-table {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
-    height: 100%;
     overflow: hidden;
 }
 
-.table-head {
+.panel-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.shift-info-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shift-icon {
+    font-size: 20px;
+}
+
+.shift-text-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #333;
+}
+
+.shift-text-sub {
+    font-size: 10px;
+    color: var(--brand-orange);
+    font-weight: 700;
+}
+
+.counter-badge {
+    border: 2px solid var(--brand-orange);
+    border-radius: 10px;
+    padding: 4px 20px;
+    text-align: center;
+    background: #FFF;
+}
+
+.counter-badge .num {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--brand-orange);
+    line-height: 1;
+}
+
+.counter-badge .lbl {
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+/* ESTRUCTURA Y SCROLL INFINITO */
+.table-head {
+    display: grid;
+    grid-template-columns: 1fr 180px;
     padding: 12px 24px;
-    font-size: 14px;
+    font-size: 11px;
     color: var(--brand-orange);
     font-weight: 800;
-    letter-spacing: 1px;
-    background: rgba(238, 64, 35, 0.08);
-    border-bottom: 1px solid var(--panel-border);
+    letter-spacing: 0.5px;
+    background: #FAFAFA;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .scroll-container {
@@ -222,7 +197,7 @@ body {
     display: flex;
     flex-direction: column;
     will-change: transform;
-    animation: scrollContinuous 40s linear infinite;
+    animation: scrollContinuous 35s linear infinite;
 }
 
 @keyframes scrollContinuous {
@@ -231,147 +206,109 @@ body {
 }
 
 .building-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 180px;
     align-items: center;
     padding: 14px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 20px;
-    font-weight: 700;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 14px;
+    font-weight: 800;
+    color: #2C3E50;
 }
 
 .status-pill {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
+    gap: 6px;
+    font-size: 10px;
     font-weight: 800;
-    padding: 5px 14px;
-    border-radius: 12px;
-    background: rgba(0, 230, 118, 0.12);
-    color: var(--morning-color);
-    border: 1px solid rgba(0, 230, 118, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--status-bg);
+    color: var(--status-green);
+    width: fit-content;
 }
 
 .status-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--morning-color);
-    box-shadow: 0 0 8px var(--morning-color);
+    background: var(--status-green);
 }
 
-/* BOTTOM SECTION */
-.bottom-section {
-    position: relative;
+/* PANEL DERECHO (VIP / CRÍTICOS) */
+.right-panel {
+    background: var(--card-bg);
     border-radius: 12px;
-    border: 1px solid var(--panel-border);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.vip-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--brand-orange);
+    letter-spacing: 0.5px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+
+.vip-scroll-container {
+    flex: 1;
     overflow: hidden;
-}
-
-.bg-monitoring-room {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    filter: brightness(0.25) contrast(1.1);
-}
-
-.overlay-content {
     position: relative;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: 240px 260px 1fr 340px;
-    gap: 12px;
-    padding: 12px;
 }
 
-.stat-card {
-    background: rgba(18, 19, 21, 0.9);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
-    padding: 16px;
+.vip-track {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    animation: vipScroll 20s linear infinite;
 }
 
-.stat-card .title { font-size: 11px; color: #a1a1aa; font-weight: 700; }
-.stat-card .value { font-size: 48px; font-weight: 900; color: var(--brand-orange); line-height: 1; margin: 6px 0; }
-.stat-card .sub { font-size: 10px; color: #a1a1aa; font-weight: 700; }
+@keyframes vipScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
 
-.status-badge-circle {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(0, 230, 118, 0.15);
-    border: 2px solid var(--morning-color);
+.vip-row {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 6px 0;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #F5F5F5;
+    font-size: 11px;
+    font-weight: 800;
+    color: #333;
+    line-height: 1.3;
 }
 
-.status-badge-circle svg { width: 26px; height: 26px; fill: var(--morning-color); }
-.status-text { font-size: 13px; font-weight: 800; color: var(--morning-color); }
-
-.critical-card {
-    background: rgba(18, 19, 21, 0.92);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--brand-orange);
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-}
-
-.critical-header {
+.vip-row .star {
     color: var(--brand-orange);
     font-size: 12px;
-    font-weight: 800;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--brand-orange-glow);
-    margin-bottom: 6px;
 }
 
-.critical-scroll { flex: 1; overflow: hidden; position: relative; }
-.critical-track { display: flex; flex-direction: column; animation: scrollCritical 25s linear infinite; }
-
-@keyframes scrollCritical { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
-
-.critical-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.star-icon { color: var(--brand-orange); }
-
+/* FOOTER */
 .footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    font-size: 11px;
-    color: #a1a1aa;
-    font-weight: 600;
+    padding: 0 8px;
+    font-size: 9px;
+    color: #A0A0A0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-.footer strong { color: var(--brand-orange); }
+.footer strong {
+    color: var(--brand-orange);
+}
 </style>
 </head>
 
@@ -380,18 +317,16 @@ body {
 <div class="dashboard">
 
     <header class="header">
-        <div class="brand-wrapper">
-            <div class="brand-logo">
-                <svg viewBox="0 0 24 24"><path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7A3,3 0 0,1 15,10C15,11.26 14.22,12.34 13.11,12.77C13.67,13.71 14.5,14.73 16,15.5V17C14.16,17 12.8,15.84 12,14.96C11.2,15.84 9.84,17 8,17V15.5C9.5,14.73 10.33,13.71 10.89,12.77C9.78,12.34 9,11.26 9,10A3,3 0 0,1 12,7Z"/></svg>
-            </div>
-            <div class="brand-text">
-                <h2>Portero <span>SEGURO</span></h2>
-                <p>Security Command Center</p>
+        <div class="logo-container">
+            <!-- REEMPLAZA ESTA RUTA POR LA IMAGEN O LOGO DE PORTERO SEGURO -->
+            <img src="logo.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
+            <div id="altLogo" style="display:none; font-weight:900; font-size:18px; color:var(--brand-orange)">
+                Portero <span style="color:#222">SEGURO</span>
             </div>
         </div>
 
         <div class="header-title">
-            <h1>MONITOREO DE EDIFICIOS</h1>
+            <h1>EDIFICIOS CON SERVICIO ACTIVO EN ESTE MOMENTO</h1>
             <p>SISTEMA CONTROLADOR EN TIEMPO REAL</p>
         </div>
 
@@ -401,97 +336,72 @@ body {
         </div>
     </header>
 
-    <section class="shifts-grid">
-        <article class="shift-card morning" id="currentShiftCard">
-            <div class="shift-header">
-                <div class="shift-info">
-                    <span class="shift-icon" id="shiftIcon">☀</span>
+    <div class="main-content">
+        
+        <section class="left-panel">
+            <div class="panel-header">
+                <div class="shift-info-box">
+                    <span class="shift-icon" id="shiftIcon">🌤</span>
                     <div>
-                        <div class="shift-title" id="shiftTitle">TURNO MAÑANA 06:45 - 18:15</div>
-                        <div class="shift-time" id="shiftTime">06:45 - 18:15 HRS</div>
+                        <div class="shift-text-title" id="shiftTitle">TURNO TARDE 18:15 - 22:00</div>
+                        <div class="shift-text-sub" id="shiftTime">18:15 - 22:00 HRS</div>
                     </div>
                 </div>
 
-                <div class="badge-count">
-                    <span class="num" id="shiftCount">0</span>
-                    <span class="lbl">EDIFICIOS</span>
+                <div class="counter-badge">
+                    <div class="num" id="shiftCount">0</div>
+                    <div class="lbl">EDIFICIOS</div>
                 </div>
             </div>
 
-            <div class="building-table">
-                <div class="table-head">
-                    <span>EDIFICIO</span>
-                    <span>ESTADO</span>
-                </div>
+            <div class="table-head">
+                <span>EDIFICIO</span>
+                <span>ESTADO</span>
+            </div>
 
-                <div class="scroll-container">
-                    <div class="scroll-track" id="buildingTrack">
-                        <div class="building-row">
-                            <span>CARGANDO EDIFICIOS...</span>
-                            <span class="status-pill"><span class="status-dot"></span>ACTIVO</span>
-                        </div>
+            <div class="scroll-container">
+                <div class="scroll-track" id="buildingTrack">
+                    <div class="building-row">
+                        <span>CARGANDO EDIFICIOS ACTIVOS...</span>
+                        <div><span class="status-pill"><span class="status-dot"></span>• ACTIVO</span></div>
                     </div>
                 </div>
             </div>
-        </article>
-    </section>
+        </section>
 
-    <section class="bottom-section">
-        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80" class="bg-monitoring-room" alt="Control Room">
-
-        <div class="overlay-content">
-            <div class="stat-card">
-                <span class="title">TOTAL EDIFICIOS ACTIVOS</span>
-                <span class="value" id="totalBuildings">0</span>
-                <span class="sub">REGISTRADOS REALES</span>
+        <aside class="right-panel">
+            <div class="vip-header">
+                <span>★ EDIFICIOS CRÍTICOS / VIP</span>
             </div>
-
-            <div class="stat-card">
-                <span class="title">ESTADO GENERAL</span>
-                <div class="status-badge-circle">
-                    <svg viewBox="0 0 24 24"><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z"/></svg>
-                </div>
-                <span class="status-text" id="generalStatus">CARGANDO</span>
-                <span class="sub" id="generalSub" style="color: var(--morning-color); margin-top: 4px;">CONECTADO A GOOGLE SHEETS</span>
-            </div>
-
-            <div></div>
-
-            <div class="critical-card">
-                <div class="critical-header">
-                    <span>★ EDIFICIOS CRÍTICOS / VIP</span>
-                </div>
-                <div class="critical-scroll">
-                    <div class="critical-track">
-                        <div class="critical-row"><span class="star-icon">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>SEDE CENTRAL PORTERO SEGURO</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
-                        <div class="critical-row"><span class="star-icon">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
-                    </div>
+            <div class="vip-scroll-container">
+                <div class="vip-track">
+                    <div class="vip-row"><span class="star">★</span><span>DEU - CENTRAL PORTERO SEGURO</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
+                    <!-- Bloque duplicado para desplazamiento fluido -->
+                    <div class="vip-row"><span class="star">★</span><span>DEU - CENTRAL PORTERO SEGURO</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>RESIDENCIAL PLATINUM BAY</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>CENTRO EMPRESARIAL REAL</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>EDIFICIO CORPORATIVO PRIME</span></div>
+                    <div class="vip-row"><span class="star">★</span><span>TORRE FINANCIERA GLOBAL</span></div>
                 </div>
             </div>
-        </div>
-    </section>
+        </aside>
+
+    </div>
 
     <footer class="footer">
-        <span>📢 OPERACIÓN EN VIVO • RED DE MONITOREO UNIFICADA</span>
+        <span>📶 OPERACIÓN EN VIVO - RED DE MONITOREO UNIFICADA</span>
         <span>SISTEMA REGISTRADO POR <strong>PORTERO SEGURO</strong></span>
     </footer>
 
 </div>
 
 <script>
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy9pN3-qWESrzI_-QD1CY50jffXSu2a0CoLnCAG5KdJb2D5deDTRwjhjldJXdavHwQY33oOKoO7Xmb/pub?output=csv";
-
-// MAPEO EXACTO DE COLUMNAS (Índice Base 0)
-const COL_ESTADO = 8;  // Columna I (Estado)
-const COL_NOMBRE = 30; // Columna AE (Nombre de edificio)
-const COL_INICIO = 31; // Columna AF (Hora inicio)
-const COL_FIN    = 32; // Columna AG (Hora Fin)
-const COL_MANANA = 33; // Columna AH (MAÑANA)
-const COL_TARDE  = 34; // Columna AI (TARDE)
-const COL_NOCHE  = 35; // Columna AJ (NOCHE)
+// URL de tu App Script de Google Sheets para tiempo real
+const API_URL = "https://script.google.com/macros/s/TU_SCRIPT_ID_AQUI/exec";
 
 let allBuildings = [];
 let lastShiftKey = "";
@@ -503,7 +413,6 @@ function updateClock() {
         weekday: "long", day: "2-digit", month: "long", year: "numeric"
     }).toUpperCase();
     
-    // Solo re-renderiza si cambia la franja horaria real del turno
     const currentKey = currentShift().key;
     if (currentKey !== lastShiftKey) {
         lastShiftKey = currentKey;
@@ -521,96 +430,35 @@ function currentShift() {
     if (min >= 18 * 60 + 15 && min < 22 * 60) {
         return { key: "afternoon", title: "TURNO TARDE 18:15 - 22:00", time: "18:15 - 22:00 HRS", icon: "🌤" };
     }
-    return { key: "night", title: "MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
-}
-
-function parseCSV(csv) {
-    const rows = [];
-    let row = [];
-    let value = "";
-    let insideQuotes = false;
-
-    for (let i = 0; i < csv.length; i++) {
-        const char = csv[i];
-        if (char === '"') {
-            if (insideQuotes && csv[i + 1] === '"') { value += '"'; i++; } 
-            else { insideQuotes = !insideQuotes; }
-        } else if (char === "," && !insideQuotes) {
-            row.push(value.trim().replace(/^"|"$/g, ''));
-            value = "";
-        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
-            if (char === "\r" && csv[i + 1] === "\n") i++;
-            row.push(value.trim().replace(/^"|"$/g, ''));
-            value = "";
-            if (row.some(v => v !== "")) rows.push(row);
-            row = [];
-        } else {
-            value += char;
-        }
-    }
-    if (value !== "" || row.length) {
-        row.push(value.trim().replace(/^"|"$/g, ''));
-        if (row.some(v => v !== "")) rows.push(row);
-    }
-    return rows;
+    return { key: "night", title: "TURNO MADRUGADA 22:00 - 06:45", time: "22:00 - 06:45 HRS", icon: "🌙" };
 }
 
 async function loadBuildings() {
     try {
-        const response = await fetch(SHEET_CSV_URL + "&t=" + Date.now(), { cache: "no-store" });
+        const response = await fetch(API_URL + "?t=" + Date.now());
         if (!response.ok) throw new Error("HTTP " + response.status);
 
-        const csv = await response.text();
-        const rows = parseCSV(csv);
+        const data = await response.json();
+        
+        const newDataString = JSON.stringify(data);
+        if (window.lastDataString === newDataString) return;
+        window.lastDataString = newDataString;
 
-        const palabrasIgnorar = ["EDIFICIO", "NOMBRE DE EDIFICIO", "INICIO", "FIN", "TURNO", "TOTAL", "MAÑANA", "TARDE", "NOCHE", "ESTADO"];
-
-        const parsed = rows.slice(1)
-            .map(row => ({
-                estado:   (row[COL_ESTADO] || "").trim().toUpperCase(),
-                nombre:   (row[COL_NOMBRE] || "").trim(),
-                inicio:   (row[COL_INICIO] || "").trim(),
-                fin:      (row[COL_FIN] || "").trim(),
-                esManana: (row[COL_MANANA] || "").trim() === "1",
-                esTarde:  (row[COL_TARDE] || "").trim() === "1",
-                esNoche:  (row[COL_NOCHE] || "").trim() === "1"
-            }))
-            .filter(b => {
-                const nom = b.nombre.toUpperCase();
-                const esNombreValido = b.nombre !== "" && b.nombre.length > 1 && !palabrasIgnorar.includes(nom);
-                const esActivo = b.estado === "ACTIVO";
-                return esNombreValido && esActivo;
-            });
-
-        // Eliminar duplicados exactos
-        const mapUnicos = new Map();
-        parsed.forEach(b => mapUnicos.set(b.nombre.toUpperCase(), b));
-        allBuildings = Array.from(mapUnicos.values());
-
-        document.getElementById("totalBuildings").textContent = allBuildings.length;
-        document.getElementById("generalStatus").textContent = "OPERATIVO";
-        document.getElementById("generalSub").textContent = "GOOGLE SHEETS • FILTRO ACTIVOS APLICADO";
-
+        allBuildings = data;
         renderCurrentShift();
 
     } catch (e) {
         console.error(e);
-        document.getElementById("generalSub").textContent = "ERROR AL CONECTAR CON GOOGLE SHEETS";
     }
 }
 
 function renderCurrentShift() {
     const shift = currentShift();
-    const card = document.getElementById("currentShiftCard");
-    
-    card.classList.remove("morning", "afternoon", "night");
-    card.classList.add(shift.key);
 
     document.getElementById("shiftIcon").textContent = shift.icon;
     document.getElementById("shiftTitle").textContent = shift.title;
     document.getElementById("shiftTime").textContent = shift.time;
 
-    // Filtrado por columnas AH, AI, AJ (Mañana, Tarde, Noche)
     const edificiosDelTurno = allBuildings.filter(b => {
         if (shift.key === "morning") return b.esManana;
         if (shift.key === "afternoon") return b.esTarde;
@@ -623,24 +471,26 @@ function renderCurrentShift() {
 
     if (!edificiosDelTurno.length) {
         track.style.animation = "none";
-        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS ACTIVOS EN ESTE TURNO</span></div>`;
+        track.innerHTML = `<div class="building-row"><span>NO HAY EDIFICIOS ACTIVOS EN ESTE TURNO</span><div></div></div>`;
         return;
     }
 
     const singleBlockHtml = edificiosDelTurno.map(b => `
         <div class="building-row">
             <span>${escapeHTML(b.nombre)}</span>
-            <span class="status-pill">
-                <span class="status-dot"></span>ACTIVO
-            </span>
+            <div>
+                <span class="status-pill">
+                    <span class="status-dot"></span>• ACTIVO
+                </span>
+            </div>
         </div>
     `).join("");
 
-    // Multiplica las listas para crear un bucle visual infinito perfectamente fluido
+    // Se multiplica la lista para asegurar un ciclo de desplazamiento infinito y fluido
     track.innerHTML = singleBlockHtml + singleBlockHtml + singleBlockHtml + singleBlockHtml;
     
-    // Ajuste dinámico de velocidad según la cantidad de registros
-    const duration = Math.max(15, edificiosDelTurno.length * 2.5);
+    // Ajusta la velocidad según la cantidad de elementos
+    const duration = Math.max(15, edificiosDelTurno.length * 2.8);
     track.style.animation = `scrollContinuous ${duration}s linear infinite`;
 }
 
@@ -651,7 +501,9 @@ function escapeHTML(str) {
 setInterval(updateClock, 1000);
 updateClock();
 loadBuildings();
-setInterval(loadBuildings, 5 * 60 * 1000);
+
+// Consulta automática de cambios cada 3 segundos
+setInterval(loadBuildings, 3000);
 </script>
 
 </body>
