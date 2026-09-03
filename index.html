@@ -59,7 +59,7 @@ html, body {
 }
 
 .logo-img {
-    max-height: 52px;
+    max-height: 55px;
     width: auto;
     object-fit: contain;
 }
@@ -204,7 +204,6 @@ html, body {
     100% { transform: translateY(-50%); }
 }
 
-/* Filas con texto de mayor tamaño */
 .building-row {
     display: grid;
     grid-template-columns: 1fr 180px;
@@ -318,7 +317,8 @@ html, body {
 
     <header class="header">
         <div class="logo-container">
-            <img src="logo.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
+            <!-- URL del Logo cargada directamente -->
+            <img src="https://raw.githubusercontent.com/aromq90-max/PorteroSeguro/refs/heads/main/2024-LOGO-RGB-01-WEB.png" alt="Portero Seguro" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block';">
             <div id="altLogo" style="display:none; font-weight:900; font-size:20px; color:var(--brand-orange)">
                 Portero <span style="color:#222">SEGURO</span>
             </div>
@@ -454,7 +454,7 @@ async function loadBuildings() {
             allBuildings = fallbackBuildings;
         }
 
-        // Ordenamiento alfabético automático de la A a la Z
+        // Ordenamiento alfabético automático (A-Z)
         allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
 
         const newDataString = JSON.stringify(allBuildings);
