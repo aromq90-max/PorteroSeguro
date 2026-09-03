@@ -472,7 +472,6 @@ function currentShift() {
 }
 
 async function loadBuildings() {
-    // Se incrementa el timeout a 5 segundos (5000ms) para evitar abortos innecesarios
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -487,11 +486,13 @@ async function loadBuildings() {
 
         const data = await response.json();
         
-        // Muestra en la consola el total exacto que responde Apps Script
         console.log(`[API Check] Total de edificios recibidos desde el backend: ${data.length}`);
 
         if (Array.isArray(data) && data.length > 0) {
-            data.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+            // Imprimir una muestra en consola para diagnosticar qué claves trae el JSON exactamente
+            console.log("[Estructura del primer elemento recibído]:", data[0]);
+
+            data.sort((a, b) => (a.nombre || "").localeCompare((b.nombre || ""), 'es', { sensitivity: 'base' }));
             
             const newDataString = JSON.stringify(data);
             if (window.lastDataString !== newDataString) {
@@ -505,11 +506,22 @@ async function loadBuildings() {
         }
     } catch (e) {
         if (e.name === 'AbortError') {
-            console.error("[API Check] Tiempo de espera agotado (Timeout > 5s). El Script tardó demasiado.");
+            console.error("[API Check] Tiempo de espera agotado (Timeout > 5s).");
         } else {
             console.error("[API Check] Error consultando la API:", e);
         }
     }
+}
+
+// Función auxiliar para validar booleanos flexibles (Maneja "true", true, 1, null, undefined)
+function isShiftActive(val) {
+    if (val === undefined || val === null || val === "") return true; // Por defecto activo si no se especificó
+    if (typeof val === "boolean") return val;
+    if (typeof val === "string") {
+        const clean = val.trim().toLowerCase();
+        if (clean === "false" || clean === "0" || clean === "no") return false;
+    }
+    return Boolean(val);
 }
 
 function renderCurrentShift() {
@@ -520,12 +532,11 @@ function renderCurrentShift() {
     document.getElementById("shiftTime").textContent = shift.time;
 
     const edificiosDelTurno = allBuildings.filter(b => {
-        if (shift.key === "morning") return b.esManana ?? true;
-        if (shift.key === "afternoon") return b.esTarde ?? true;
-        return b.esNoche ?? true;
+        if (shift.key === "morning") return isShiftActive(b.esManana);
+        if (shift.key === "afternoon") return isShiftActive(b.esTarde);
+        return isShiftActive(b.esNoche);
     });
 
-    // Muestra en la consola cuántos pasaron el filtro del turno
     console.log(`[Turno Check] Edificios para ${shift.title}: ${edificiosDelTurno.length} de ${allBuildings.length}`);
 
     document.getElementById("shiftCount").textContent = edificiosDelTurno.length;
@@ -540,7 +551,7 @@ function renderCurrentShift() {
 
     const listHtml = edificiosDelTurno.map(b => `
         <div class="building-row">
-            <span>${escapeHTML(b.nombre)}</span>
+            <span>${escapeHTML(b.nombre || "SIN NOMBRE")}</span>
             <div>
                 <span class="status-pill">
                     <span class="status-dot"></span>EN LÍNEA
@@ -551,7 +562,8 @@ function renderCurrentShift() {
 
     track.innerHTML = listHtml + listHtml;
     
-    const duration = Math.max(12, edificiosDelTurno.length * 2.5);
+    // Ajuste dinámico de velocidad del scroll según la cantidad de registros
+    const duration = Math.max(15, edificiosDelTurno.length * 1.8);
     track.style.animation = `scrollLoop ${duration}s linear infinite`;
 }
 
@@ -572,7 +584,7 @@ function escapeHTML(str) {
 }
 
 updateClock();
-allBuildings.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+allBuildings.sort((a, b) => (a.nombre || "").localeCompare((b.nombre || ""), 'es', { sensitivity: 'base' }));
 renderCurrentShift();
 renderVipBuildings();
 
